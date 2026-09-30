@@ -1,0 +1,19 @@
+/* Estructura de página y secciones */
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px;position:relative}
+.hero{min-height:92vh;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:24px}
+h1{font-size:clamp(4.6rem,15vw,9.6rem);line-height:.95;color:var(--brand);font-weight:700;letter-spacing:2px;
+  text-shadow:0 2px 0 var(--deep),0 4px 0 var(--deep),0 6px 0 var(--deep),0 8px 0 color-mix(in srgb,var(--deep) 70%,#000),0 22px 26px rgba(0,0,0,.28)}
+.kick{font-family:"Fredoka",sans-serif;font-size:1.5rem;font-weight:500;margin:18px 0 6px}
+.lead{color:var(--muted);font-size:1.1rem;margin-bottom:28px;max-width:440px}
+.art{perspective:1000px;position:relative}
+.blk{padding:64px 0 10px}
+.sub{color:var(--muted);max-width:540px;margin:10px 0 38px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;perspective:1000px;padding-bottom:30px}
+.cards>.card:nth-child(3n+2){margin-top:34px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;position:relative;padding-top:6px}
+.steps::before{content:"";position:absolute;left:12%;right:12%;top:34px;border-top:4px dotted var(--brand)}
+.step{text-align:center;position:relative}
+.step p{max-width:260px;margin:0 auto}
+.contact{text-align:center;padding:80px 0 26px}
+.contact p{color:var(--muted);margin:10px 0 26px}
+.site-footer{text-align:center;color:var(--muted);font-size:.9rem;padding:22px 0 44px;border-top:1px solid var(--line);margin-top:30px}

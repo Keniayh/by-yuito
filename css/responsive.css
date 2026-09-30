@@ -1,0 +1,7 @@
+/* Adaptación a pantallas pequeñas y movimiento reducido */
+@media (max-width:780px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding:34px 0}
+  .cards,.steps{grid-template-columns:1fr}.cards{max-width:380px;margin:0 auto}
+  .cards>.card:nth-child(n){margin-top:0}.steps::before{display:none}
+}
+@media (prefers-reduced-motion:reduce){.emblem svg{animation:none}.tail{animation:none;stroke-dashoffset:0}}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yüito · Handmade</title>
+<meta name="description" content="Tejidos a crochet hechos a mano en Bucaramanga: bolsos, amigurumis y piezas personalizadas.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Fredoka:wght@500;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<svg id="hook" width="64" height="64" viewBox="0 0 84 84" aria-hidden="true">
+  <g transform="translate(84 0) scale(-1 1)">
+  <path class="handle" d="M10 74 L44 36" stroke-width="12" stroke-linecap="round"/>
+  <path d="M8 70 L40 35" stroke="#f7ecd9" stroke-width="2.6" stroke-linecap="round" opacity=".45"/>
+  <path d="M44 36 L50 29" stroke="#8b9098" stroke-width="7" stroke-linecap="round"/>
+  <path d="M50 29 L70 8" stroke="#c9cdd3" stroke-width="3" stroke-linecap="round"/>
+  <path d="M70 8 C76 3 82 7 78 13" stroke="#c9cdd3" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ballsym" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+    <circle cx="50" cy="50" r="38"/><path d="M14 40Q50 18 86 40M12 54Q50 30 88 54M16 68Q50 46 84 68M34 14Q62 50 40 88M58 12Q80 50 62 88M10 92C24 100 34 84 48 92S72 96 90 90"/></g></symbol>
+</svg>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1>Yüito</h1>
+      <p class="kick">Tejidos a crochet, hechos a mano.</p>
+      <p class="lead">Bolsos, amigurumis y piezas personalizadas elaboradas en Bucaramanga y su área metropolitana. Entregas y envíos.</p>
+      <a class="btn" href="#catalogo">Ver catálogo</a>
+      <a class="btn alt wa" href="#">Escribir por WhatsApp</a>
+    </div>
+    <div class="art">
+      <div class="blob b1" data-d="28"></div><div class="blob b2" data-d="-24"></div><div class="blob b3" data-d="36"></div><div class="blob b4" data-d="-32"></div>
+      <div class="emblem" id="emblem">
+        <svg viewBox="0 0 400 400" role="img" aria-label="Logo de Yüito Handmade">
+          <circle class="bg" cx="200" cy="200" r="196"/>
+          <circle class="lg" cx="200" cy="200" r="184" fill="none" stroke-width="1.6"/>
+          <circle class="lg" cx="200" cy="200" r="177" fill="none" stroke-width=".8"/>
+          <g class="lg" fill="none" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="180" cy="118" r="40"/>
+            <path d="M142 108Q180 88 218 108M141 122Q180 98 219 122M146 138Q180 116 214 138M162 80Q188 118 166 156M186 78Q208 118 190 156"/>
+            <path d="M232 64L206 148"/><path d="M231 63C236 58 244 62 240 70" stroke-width="1.8"/>
+            <path class="tail" d="M112 152C132 166 152 142 180 158S236 150 258 150C280 150 288 166 274 168C262 170 262 154 282 152"/>
+          </g>
+          <text class="lf" x="200" y="256" text-anchor="middle" font-family="'Cormorant Garamond',Georgia,serif" font-size="86" font-weight="500" letter-spacing="4">YÜITO</text>
+          <path class="lg" d="M108 292H188M212 292H292" stroke-width="1.2"/><circle class="lf" cx="200" cy="292" r="3.4"/>
+          <text class="lf" x="200" y="326" text-anchor="middle" font-family="Nunito,sans-serif" font-size="14" letter-spacing="7">HANDMADE</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="categorias">
+    <h2>Lo que elaboramos</h2>
+    <p class="sub">Cada pieza se teje a mano y puede personalizarse.</p>
+    <div class="cards" id="category-grid"></div>
+  </section>
+
+  <section class="blk" id="catalogo">
+    <h2>Catálogo</h2>
+    <p class="sub">Piezas de nuestra colección y trabajos por encargo. Cada diseño puede elaborarse en los colores que usted elija.</p>
+    <div class="cards" id="product-grid"></div>
+  </section>
+
+  <section class="blk">
+    <h2>Cómo realizar su pedido</h2>
+    <p class="sub"></p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><p>Escríbanos indicando la pieza que le interesa o el modelo que desea.</p></div>
+      <div class="step"><div class="n">2</div><p>Acordamos colores, plazo de elaboración y valor.</p></div>
+      <div class="step"><div class="n">3</div><p>Elaboramos su pedido y lo entregamos o enviamos.</p></div>
+    </div>
+  </section>
+
+  <section class="contact">
+    <h2>Solicite su pedido</h2>
+    <p>Bucaramanga y área metropolitana · Entregas y envíos</p>
+    <a class="btn wa" href="#">WhatsApp</a>
+    <a class="btn alt" data-instagram href="#">Instagram</a>
+  </section>
+</main>
+<footer class="site-footer">Yüito Handmade · Bucaramanga</footer>
+
+<script src="js/config.js" defer></script>
+<script src="js/data/content.js" defer></script>
+<script src="js/core/loop.js" defer></script>
+<script src="js/core/pointer.js" defer></script>
+<script src="js/modules/palette.js" defer></script>
+<script src="js/modules/cursor.js" defer></script>
+<script src="js/modules/parallax.js" defer></script>
+<script src="js/modules/tilt.js" defer></script>
+<script src="js/modules/links.js" defer></script>
+<script src="js/modules/catalog.js" defer></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>

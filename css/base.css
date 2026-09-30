@@ -1,0 +1,16 @@
+/* Tokens, reinicio y tipografía */
+:root{
+  --brand:rgb(133,132,111);--deep:rgb(93,92,73);--logoink:rgb(247,236,217);
+  --bg:#f8f1e6;--ink:#2f2c26;--muted:#6b6558;--line:rgba(47,44,38,.2);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#211d1a;--ink:#f3ead9;--muted:#c2b8a6;--line:rgba(243,234,217,.22)}}
+:root[data-theme="dark"]{--bg:#211d1a;--ink:#f3ead9;--muted:#c2b8a6;--line:rgba(243,234,217,.22)}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font-family:"Nunito","Segoe UI",system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+h1,h2,h3,.n{font-family:"Fredoka","Trebuchet MS",sans-serif}
+h2{font-size:clamp(2rem,5vw,3rem);font-weight:700}
+a:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+@media (pointer:fine){*{cursor:none!important}}
+@media (pointer:coarse){#hook{display:none}}
