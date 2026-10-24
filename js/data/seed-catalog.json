@@ -1,0 +1,159 @@
+{
+  "format": "yuito-catalog",
+  "version": 1,
+  "note": "Catálogo inicial: los seis productos originales. Se carga desde Admin > Respaldo > Cargar catálogo inicial.",
+  "categories": [
+    {
+      "slug": "bolsos",
+      "name": "Bolsos",
+      "description": "Tejidos en el color, tamaño y punto que usted elija. Piezas únicas.",
+      "sort_order": 1
+    },
+    {
+      "slug": "amigurumis",
+      "name": "Amigurumis",
+      "description": "Muñecos y figuras tejidas, para regalar o para decorar.",
+      "sort_order": 2
+    },
+    {
+      "slug": "otros",
+      "name": "Otros",
+      "description": "Si cuenta con un tutorial o modelo de referencia, podemos elaborarlo para usted.",
+      "sort_order": 3
+    }
+  ],
+  "products": [
+    {
+      "slug": "cenit",
+      "name": "Cenit",
+      "description": "Bolso de hombro en rayas celeste y crema, con lazo decorativo y asas largas trenzadas.",
+      "price_cop": null,
+      "category": "bolsos",
+      "kind": "pieza",
+      "status": "publicado",
+      "availability": "disponible",
+      "featured": false,
+      "tile_color": "#b8cdea",
+      "image_mode": "recorte",
+      "cta_label": "Consultar disponibilidad",
+      "whatsapp_message": "Hola, quisiera información sobre el bolso Cenit.",
+      "sort_order": 1,
+      "images": [
+        {
+          "src": "assets/images/products/cenit.webp",
+          "alt": "Bolso Cenit, tejido en rayas celeste y crema con lazo",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "slug": "bruma",
+      "name": "Bruma",
+      "description": "Bandolera en café y celeste, con aplique de corazón y correa larga tejida.",
+      "price_cop": null,
+      "category": "bolsos",
+      "kind": "pieza",
+      "status": "publicado",
+      "availability": "disponible",
+      "featured": false,
+      "tile_color": "#cfc3e8",
+      "image_mode": "recorte",
+      "cta_label": "Consultar disponibilidad",
+      "whatsapp_message": "Hola, quisiera información sobre el bolso Bruma.",
+      "sort_order": 2,
+      "images": [
+        {
+          "src": "assets/images/products/bruma.webp",
+          "alt": "Bolso Bruma, tejido en café y celeste con corazón",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "slug": "browni",
+      "name": "Browni",
+      "description": "Bolso de mano en tono café, con asas integradas y una flor tejida en beige como detalle.",
+      "price_cop": null,
+      "category": "bolsos",
+      "kind": "pieza",
+      "status": "publicado",
+      "availability": "disponible",
+      "featured": false,
+      "tile_color": "#e6d3b5",
+      "image_mode": "recorte",
+      "cta_label": "Consultar disponibilidad",
+      "whatsapp_message": "Hola, quisiera información sobre el bolso Browni.",
+      "sort_order": 3,
+      "images": [
+        {
+          "src": "assets/images/products/browni.webp",
+          "alt": "Bolso Browni, tejido en café con flor beige",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "slug": "bolso-de-mano",
+      "name": "Bolso de mano",
+      "description": "Bolso de mano tejido con cordón inca sobre canvas plástico, en gris oscuro con solapa y cierre metálico dorado.",
+      "price_cop": null,
+      "category": "bolsos",
+      "kind": "pieza",
+      "status": "publicado",
+      "availability": "disponible",
+      "featured": false,
+      "tile_color": "#c9ccb4",
+      "image_mode": "recorte",
+      "cta_label": "Consultar disponibilidad",
+      "whatsapp_message": "Hola, quisiera información sobre el bolso de mano con cierre dorado.",
+      "sort_order": 4,
+      "images": [
+        {
+          "src": "assets/images/products/bolso-de-mano.webp",
+          "alt": "Bolso de mano gris oscuro con cierre dorado",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "slug": "cactus-amigurumi",
+      "name": "Cactus amigurumi",
+      "description": "Cactus tejidos con macetas grises y pequeñas flores, ideales como detalle decorativo.",
+      "price_cop": null,
+      "category": "amigurumis",
+      "kind": "pieza",
+      "status": "publicado",
+      "availability": "disponible",
+      "featured": false,
+      "tile_color": "#efe0a6",
+      "image_mode": "recorte",
+      "cta_label": "Consultar disponibilidad",
+      "whatsapp_message": "Hola, quisiera información sobre los cactus amigurumi.",
+      "sort_order": 5,
+      "images": [
+        {
+          "src": "assets/images/products/cactus-amigurumi.webp",
+          "alt": "Dos cactus amigurumi en macetas grises",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "slug": "diseno-a-su-medida",
+      "name": "Diseño a su medida",
+      "description": "Bolsos, amigurumis y otras piezas según el modelo y los colores que usted indique.",
+      "price_cop": null,
+      "category": "otros",
+      "kind": "servicio",
+      "status": "publicado",
+      "availability": "disponible",
+      "featured": false,
+      "tile_color": "#f1d2dc",
+      "image_mode": "recorte",
+      "cta_label": "Solicitar cotización",
+      "whatsapp_message": "Hola, quisiera solicitar una cotización para un diseño personalizado.",
+      "sort_order": 6,
+      "images": []
+    }
+  ]
+}
