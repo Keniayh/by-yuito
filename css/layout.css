@@ -1,19 +1,38 @@
 /* Estructura de página y secciones */
-.wrap{max-width:1060px;margin:0 auto;padding:0 22px;position:relative}
-.hero{min-height:92vh;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:24px}
-h1{font-size:clamp(4.6rem,15vw,9.6rem);line-height:.95;color:var(--brand);font-weight:700;letter-spacing:2px;
-  text-shadow:0 2px 0 var(--deep),0 4px 0 var(--deep),0 6px 0 var(--deep),0 8px 0 color-mix(in srgb,var(--deep) 70%,#000),0 22px 26px rgba(0,0,0,.28)}
-.kick{font-family:"Fredoka",sans-serif;font-size:1.5rem;font-weight:500;margin:18px 0 6px}
-.lead{color:var(--muted);font-size:1.1rem;margin-bottom:28px;max-width:440px}
-.art{perspective:1000px;position:relative}
-.blk{padding:64px 0 10px}
-.sub{color:var(--muted);max-width:540px;margin:10px 0 38px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;perspective:1000px;padding-bottom:30px}
-.cards>.card:nth-child(3n+2){margin-top:34px}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;position:relative;padding-top:6px}
-.steps::before{content:"";position:absolute;left:12%;right:12%;top:34px;border-top:4px dotted var(--brand)}
-.step{text-align:center;position:relative}
-.step p{max-width:260px;margin:0 auto}
-.contact{text-align:center;padding:80px 0 26px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:var(--gutter);position:relative}
+.bar{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar-in{display:flex;align-items:center;justify-content:space-between;min-height:56px}
+.mark{font-family:var(--f-display);font-weight:700;font-size:1.5rem;color:var(--deep);text-decoration:none;letter-spacing:1px}
+.nav{display:flex;gap:clamp(14px,3vw,30px)}
+.nav a{color:var(--ink);text-decoration:none;font-weight:700;font-size:.95rem;padding:10px 2px}
+.nav a:hover{color:var(--deep);text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+
+.hero{min-height:min(72vh,700px);display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:32px;padding-block:48px}
+.eyebrow{font-family:var(--f-display);font-size:.9rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+h1{font-size:clamp(4.4rem,14vw,9.2rem);line-height:.95;color:var(--deep);font-weight:700;letter-spacing:2px}
+.kick{font-family:var(--f-display);font-size:1.5rem;font-weight:500;margin:18px 0 6px}
+.lead{color:var(--muted);font-size:1.1rem;margin-bottom:26px;max-width:440px}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.actions.center{justify-content:center}
+.art{perspective:1000px}
+.roll{margin-top:34px;max-width:460px}
+.roll-label{font-family:var(--f-display);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.roll-list{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+
+.blk{padding-block:72px 8px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px 40px;flex-wrap:wrap;margin-bottom:34px}
+.sub{color:var(--muted);max-width:540px;margin-top:10px}
+.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:44px 28px}
+.state{color:var(--muted);padding:12px 0 28px}
+
+.steps{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:34px;position:relative}
+.steps::before{content:"";position:absolute;left:12%;right:12%;top:29px;border-top:2px dashed var(--brand)}
+.steps li{text-align:center;position:relative}
+.steps p{max-width:260px;margin:0 auto}
+
+.order{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;border-top:1px solid var(--line);padding-top:48px}
+.contact{text-align:center;padding-block:84px 30px}
 .contact p{color:var(--muted);margin:10px 0 26px}
-.site-footer{text-align:center;color:var(--muted);font-size:.9rem;padding:22px 0 44px;border-top:1px solid var(--line);margin-top:30px}
+.site-footer{color:var(--muted);font-size:.9rem;padding:22px 0 calc(34px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);margin-top:40px}
+.foot-in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.foot-in a{color:var(--muted)}

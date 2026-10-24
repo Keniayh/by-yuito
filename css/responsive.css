@@ -1,7 +1,19 @@
 /* Adaptación a pantallas pequeñas y movimiento reducido */
-@media (max-width:780px){
-  .hero{grid-template-columns:1fr;min-height:auto;padding:34px 0}
-  .cards,.steps{grid-template-columns:1fr}.cards{max-width:380px;margin:0 auto}
-  .cards>.card:nth-child(n){margin-top:0}.steps::before{display:none}
+@media (max-width:900px){
+  .order{grid-template-columns:1fr;gap:24px}
 }
-@media (prefers-reduced-motion:reduce){.emblem svg{animation:none}.tail{animation:none;stroke-dashoffset:0}}
+@media (max-width:780px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding-block:28px 12px}
+  .art{order:-1;max-width:260px;margin:0 auto}
+  .steps{grid-template-columns:1fr;gap:18px}.steps::before{display:none}
+  .sheet{grid-template-columns:repeat(2,1fr);gap:34px 16px}
+  .piece.service{grid-column:span 2}
+  .piece h3{font-size:1.3rem}
+  .blk{padding-top:54px}
+}
+@media (max-width:420px){
+  .sheet{grid-template-columns:1fr}.piece.service{grid-column:auto}
+  .nav a:first-child{display:none}
+}
+@media (prefers-reduced-motion:reduce){.emblem svg{animation:none}.tail{animation:none;stroke-dashoffset:0}html{scroll-behavior:auto}.btn{transition:none}}
+@media (max-width:420px){.piece.service .plate{aspect-ratio:4/5}}

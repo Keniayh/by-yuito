@@ -12,7 +12,7 @@ window.Yuito = window.Yuito || {};
   Y.cursor = {
     init: function () {
       if (!Y.env.finePointer) return;
-      hook = document.getElementById('hook'); hx = Y.pointer.x; hy = Y.pointer.y;
+      hook = document.getElementById('hook'); document.documentElement.classList.add('has-hook'); hx = Y.pointer.x; hy = Y.pointer.y;
       Y.loop.add(frame);
     }
   };

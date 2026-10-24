@@ -1,16 +1,26 @@
-/* Tokens, reinicio y tipografía */
+/* Tokens, reinicio y tipografía.
+   Tipografía: Fredoka (identidad de la marca) para títulos, números y etiquetas;
+   Nunito para lectura; Cormorant Garamond solo dentro del logo. */
 :root{
   --brand:rgb(133,132,111);--deep:rgb(93,92,73);--logoink:rgb(247,236,217);
-  --bg:#f8f1e6;--ink:#2f2c26;--muted:#6b6558;--line:rgba(47,44,38,.2);
-  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f8f1e6;--bg2:#efe5d3;--ink:#2f2c26;--muted:#6b6558;--line:rgba(47,44,38,.2);--on-deep:#f7ecd9;
+  --tile-fallback:#e9dcc6;
+  --f-display:"Fredoka","Trebuchet MS",sans-serif;--f-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --gutter:clamp(16px,4vw,32px);
+  color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#211d1a;--ink:#f3ead9;--muted:#c2b8a6;--line:rgba(243,234,217,.22)}}
-:root[data-theme="dark"]{--bg:#211d1a;--ink:#f3ead9;--muted:#c2b8a6;--line:rgba(243,234,217,.22)}
-*{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
-body{background:var(--bg);color:var(--ink);font-family:"Nunito","Segoe UI",system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
-h1,h2,h3,.n{font-family:"Fredoka","Trebuchet MS",sans-serif}
-h2{font-size:clamp(2rem,5vw,3rem);font-weight:700}
-a:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
-@media (pointer:fine){*{cursor:none!important}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#211d1a;--bg2:#2b2622;--ink:#f3ead9;--muted:#c2b8a6;--line:rgba(243,234,217,.22);--tile-fallback:#3a332c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#211d1a;--bg2:#2b2622;--ink:#f3ead9;--muted:#c2b8a6;--line:rgba(243,234,217,.22);--tile-fallback:#3a332c;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.6;overflow-x:hidden;min-height:100dvh}
+h1,h2,h3,.n{font-family:var(--f-display)}
+h2{font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1.1}
+img,svg{max-width:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.skip{position:absolute;left:-9999px;top:8px;background:var(--deep);color:var(--on-deep);padding:10px 16px;border-radius:8px;z-index:200}
+.skip:focus{left:8px}
+@media (pointer:fine){html.has-hook,html.has-hook *{cursor:none!important}}
 @media (pointer:coarse){#hook{display:none}}

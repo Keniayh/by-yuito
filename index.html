@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Yüito · Handmade</title>
-<meta name="description" content="Tejidos a crochet hechos a mano en Bucaramanga: bolsos, amigurumis y piezas personalizadas.">
+<title>Yüito · Tejidos a crochet hechos a mano</title>
+<meta name="description" content="Bolsos, amigurumis y piezas tejidas a crochet por encargo, hechas a mano en Bucaramanga. Entregas y envíos.">
+<meta name="theme-color" content="#f8f1e6">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Fredoka:wght@500;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
@@ -22,22 +25,41 @@
   <path d="M70 8 C76 3 82 7 78 13" stroke="#c9cdd3" stroke-width="3" fill="none" stroke-linecap="round"/>
   </g>
 </svg>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <symbol id="ballsym" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
     <circle cx="50" cy="50" r="38"/><path d="M14 40Q50 18 86 40M12 54Q50 30 88 54M16 68Q50 46 84 68M34 14Q62 50 40 88M58 12Q80 50 62 88M10 92C24 100 34 84 48 92S72 96 90 90"/></g></symbol>
 </svg>
 
-<main class="wrap">
-  <section class="hero">
-    <div>
+<a class="skip" href="#catalogo">Saltar al catálogo</a>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="mark" href="#inicio" aria-label="Yüito, inicio">Yüito</a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#pedido">Pedido</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="wrap hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Handmade · Bucaramanga</p>
       <h1>Yüito</h1>
       <p class="kick">Tejidos a crochet, hechos a mano.</p>
       <p class="lead">Bolsos, amigurumis y piezas personalizadas elaboradas en Bucaramanga y su área metropolitana. Entregas y envíos.</p>
-      <a class="btn" href="#catalogo">Ver catálogo</a>
-      <a class="btn alt wa" href="#">Escribir por WhatsApp</a>
+      <div class="actions">
+        <a class="btn" href="#catalogo">Ver catálogo</a>
+        <a class="btn alt wa" href="#">Escribir por WhatsApp</a>
+      </div>
+      <div class="roll" id="roll" hidden>
+        <p class="roll-label">Piezas de la colección</p>
+        <ul class="roll-list" id="roll-list"></ul>
+      </div>
     </div>
     <div class="art">
-      <div class="blob b1" data-d="28"></div><div class="blob b2" data-d="-24"></div><div class="blob b3" data-d="36"></div><div class="blob b4" data-d="-32"></div>
       <div class="emblem" id="emblem">
         <svg viewBox="0 0 400 400" role="img" aria-label="Logo de Yüito Handmade">
           <circle class="bg" cx="200" cy="200" r="196"/>
@@ -57,47 +79,73 @@
     </div>
   </section>
 
-  <section class="blk" id="categorias">
-    <h2>Lo que elaboramos</h2>
-    <p class="sub">Cada pieza se teje a mano y puede personalizarse.</p>
-    <div class="cards" id="category-grid"></div>
+  <section class="wrap blk" id="catalogo" aria-labelledby="t-catalogo">
+    <div class="head">
+      <div>
+        <h2 id="t-catalogo">Catálogo</h2>
+        <p class="sub">Piezas de la colección y trabajos por encargo. Cada diseño puede elaborarse en los colores que usted elija.</p>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Filtrar por categoría" hidden></div>
+    </div>
+    <p class="state" id="state" role="status" aria-live="polite">Cargando catálogo…</p>
+    <div class="sheet" id="sheet"></div>
   </section>
 
-  <section class="blk" id="catalogo">
-    <h2>Catálogo</h2>
-    <p class="sub">Piezas de nuestra colección y trabajos por encargo. Cada diseño puede elaborarse en los colores que usted elija.</p>
-    <div class="cards" id="product-grid"></div>
+  <section class="wrap blk" aria-labelledby="t-pasos">
+    <h2 id="t-pasos">Cómo realizar su pedido</h2>
+    <ol class="steps">
+      <li><span class="n">1</span><p>Escríbanos indicando la pieza que le interesa o el modelo que desea.</p></li>
+      <li><span class="n">2</span><p>Acordamos colores, plazo de elaboración y valor.</p></li>
+      <li><span class="n">3</span><p>Elaboramos su pedido y lo entregamos o enviamos.</p></li>
+    </ol>
   </section>
 
-  <section class="blk">
-    <h2>Cómo realizar su pedido</h2>
-    <p class="sub"></p>
-    <div class="steps">
-      <div class="step"><div class="n">1</div><p>Escríbanos indicando la pieza que le interesa o el modelo que desea.</p></div>
-      <div class="step"><div class="n">2</div><p>Acordamos colores, plazo de elaboración y valor.</p></div>
-      <div class="step"><div class="n">3</div><p>Elaboramos su pedido y lo entregamos o enviamos.</p></div>
+  <section class="wrap blk" id="pedido" aria-labelledby="t-pedido">
+    <div class="order">
+      <div>
+        <h2 id="t-pedido">Solicite su pedido</h2>
+        <p class="sub">Complete los datos y se abrirá WhatsApp con el mensaje listo para enviar. No se envía nada hasta que usted lo confirme allí.</p>
+      </div>
+      <form class="form" id="order-form" novalidate>
+        <label for="o-name">Su nombre</label>
+        <input id="o-name" name="name" type="text" autocomplete="name" maxlength="80" required>
+        <p class="err" id="o-name-err" hidden></p>
+
+        <label for="o-piece">Pieza de interés</label>
+        <select id="o-piece" name="piece"><option value="">Diseño a su medida / otra pieza</option></select>
+
+        <label for="o-notes">Colores, tamaño o detalles</label>
+        <textarea id="o-notes" name="notes" rows="4" maxlength="400" placeholder="Por ejemplo: en tonos lila y crema, tamaño mediano."></textarea>
+        <p class="hint"><span id="o-count">0</span>/400</p>
+
+        <button class="btn" type="submit">Continuar en WhatsApp</button>
+      </form>
     </div>
   </section>
 
-  <section class="contact">
-    <h2>Solicite su pedido</h2>
+  <section class="wrap contact" id="contacto" aria-labelledby="t-contacto">
+    <h2 id="t-contacto">Contacto</h2>
     <p>Bucaramanga y área metropolitana · Entregas y envíos</p>
-    <a class="btn wa" href="#">WhatsApp</a>
-    <a class="btn alt" data-instagram href="#">Instagram</a>
+    <div class="actions center">
+      <a class="btn wa" href="#">WhatsApp</a>
+      <a class="btn alt" data-instagram href="#">Instagram</a>
+    </div>
   </section>
 </main>
-<footer class="site-footer">Yüito Handmade · Bucaramanga</footer>
+<footer class="site-footer"><div class="wrap foot-in"><span>Yüito Handmade · Bucaramanga</span><a href="admin/" rel="nofollow">Acceso</a></div></footer>
 
 <script src="js/config.js" defer></script>
-<script src="js/data/content.js" defer></script>
+<script src="js/lib/dom.js" defer></script>
+<script src="js/services/catalog-service.js" defer></script>
 <script src="js/core/loop.js" defer></script>
 <script src="js/core/pointer.js" defer></script>
 <script src="js/modules/palette.js" defer></script>
 <script src="js/modules/cursor.js" defer></script>
 <script src="js/modules/parallax.js" defer></script>
-<script src="js/modules/tilt.js" defer></script>
 <script src="js/modules/links.js" defer></script>
 <script src="js/modules/catalog.js" defer></script>
+<script src="js/modules/hero.js" defer></script>
+<script src="js/modules/order.js" defer></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>
