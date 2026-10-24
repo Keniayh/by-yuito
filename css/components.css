@@ -4,7 +4,11 @@
 .btn:active{transform:translateY(1px)}
 .btn.alt{background:transparent;color:var(--deep)}
 .btn.alt:hover{background:var(--deep);color:var(--on-deep)}
-.btn.sm{min-height:44px;padding:9px 20px;font-size:.95rem}
+.band.deep .btn{background:var(--on-deep);border-color:var(--on-deep);color:var(--deep)}
+.band.deep .btn:hover,.band.deep .btn.alt{background:transparent;color:var(--on-deep)}
+.band.deep .btn.alt:hover{background:var(--on-deep);color:var(--deep)}
+.band.deep :focus-visible{outline-color:var(--on-deep)}
+.btn.sm{min-height:44px;padding:9px 20px;font-size:1rem}
 .linkbtn{background:none;border:0;padding:0;color:var(--deep);font-weight:700;text-decoration:underline;cursor:pointer;min-height:44px}
 
 .roll-list a{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--ink);text-decoration:none;font-family:var(--f-display);font-weight:500;font-size:1.05rem}
@@ -26,22 +30,22 @@
 .plate img.cover{object-fit:cover}
 .plate.ball{color:rgba(47,44,38,.7)}
 .ballsvg{width:44%;height:auto;aspect-ratio:1}
-.noimg{color:#4a443a;font-size:.9rem;text-align:center;padding:0 24px}
-.tag{position:absolute;top:18px;left:18px;z-index:1;font-family:var(--f-display);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;background:#2f2c26;color:#f7ecd9;padding:3px 10px;border-radius:999px}
+.noimg{color:#4a443a;font-size:1rem;text-align:center;padding:0 24px}
+.tag{position:absolute;top:18px;left:18px;z-index:1;font-family:var(--f-display);font-size:.9rem;background:#2f2c26;color:#f7ecd9;padding:3px 10px;border-radius:999px}
 .tag.out{background:#f7ecd9;color:#2f2c26;border:1.5px solid #2f2c26}
 .is-out .plate img{opacity:.7}
 .thumbs{display:flex;gap:8px;margin-top:8px}
 .thumbs button{width:44px;height:44px;padding:0;border:2px solid var(--line);border-radius:8px;background:var(--bg2);overflow:hidden;cursor:pointer}
 .thumbs button[aria-pressed="true"]{border-color:var(--deep)}
 .thumbs img{width:100%;height:100%;object-fit:cover;display:block}
-.meta{font-family:var(--f-display);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:14px}
+.meta{font-family:var(--f-display);font-size:1rem;color:var(--muted);margin-top:14px}
 .piece h3{font-size:1.65rem;line-height:1.15;margin:2px 0 6px;overflow-wrap:anywhere}
-.desc{color:var(--muted);margin-bottom:10px;flex:1;overflow-wrap:anywhere}
+.desc{color:var(--ink);margin-bottom:10px;flex:1;overflow-wrap:anywhere}
 .price{font-family:var(--f-display);font-weight:600;font-size:1.1rem;margin-bottom:14px}
 .price.ask{font-weight:500;color:var(--muted)}
 .piece .btn{align-self:flex-start}
 
-.n{width:58px;height:58px;border-radius:50%;border:2px dashed var(--deep);background:var(--bg);color:var(--deep);font-size:1.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;position:relative}
+.n{width:58px;height:58px;border-radius:50%;border:2px dashed var(--deep);background:var(--bg);color:var(--deep);font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;position:relative}
 
 /* Formulario */
 .form label{display:block;font-weight:700;margin:16px 0 6px}
@@ -49,10 +53,10 @@
 .form input,.form select,.form textarea{width:100%;min-height:46px;padding:10px 14px;border:2px solid var(--line);border-radius:10px;background:var(--bg);font-size:1rem}
 .form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--deep)}
 .form [aria-invalid="true"]{border-color:#b3261e}
-.err{color:#b3261e;font-size:.9rem;margin-top:6px}
+.err{color:#b3261e;font-size:.95rem;margin-top:6px}
 :root[data-theme="dark"] .err{color:#ff9d93}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .err{color:#ff9d93}}
-.hint{color:var(--muted);font-size:.85rem;text-align:right;margin:4px 0 14px}
+.hint{color:var(--muted);font-size:.9rem;text-align:right;margin:4px 0 14px}
 
 /* Logo (sello) */
 .emblem{transform-style:preserve-3d;transition:transform .15s ease-out}
@@ -65,3 +69,8 @@
 #hook{position:fixed;left:0;top:0;z-index:99;pointer-events:none;transform-origin:11px 6px;will-change:transform}
 #hook .handle{stroke:var(--deep)}
 .piece.service .plate{aspect-ratio:8/5}
+
+/* Entradas suaves al desplazarse (solo si hay JavaScript y se admite movimiento) */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}

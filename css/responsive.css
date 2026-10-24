@@ -3,9 +3,10 @@
   .order{grid-template-columns:1fr;gap:24px}
 }
 @media (max-width:780px){
-  .hero{grid-template-columns:1fr;min-height:auto;padding-block:28px 12px}
+  .hero{grid-template-columns:1fr;min-height:auto;padding-block:28px 84px}
   .art{order:-1;max-width:260px;margin:0 auto}
-  .steps{grid-template-columns:1fr;gap:18px}.steps::before{display:none}
+  .steps{grid-template-columns:1fr;gap:26px}.steps::before{display:none}
+  .band{padding-block:56px;margin-top:56px}
   .sheet{grid-template-columns:repeat(2,1fr);gap:34px 16px}
   .piece.service{grid-column:span 2}
   .piece h3{font-size:1.3rem}

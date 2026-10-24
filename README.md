@@ -1,136 +1,63 @@
 # YÜITO · Handmade
 
-<p align="center">
-  <strong>YÜITO</strong><br>
-  Handmade · Crochet · Hecho con intención
-</p>
+Sitio web de **YÜITO**, tejidos a crochet hechos a mano en Bucaramanga
+([Instagram @by.yuito](https://www.instagram.com/by.yuito/)).
 
-<p align="center">
-  Sitio web oficial de <strong>YÜITO</strong>, un emprendimiento de productos tejidos a mano.
-</p>
+Es un sitio estático (HTML, CSS y JavaScript sin paso de compilación) que se publica en
+GitHub Pages. El catálogo se lee de **Supabase** (plan gratuito) y se administra desde un
+panel privado en `/admin/`. Si Supabase no está configurado o no responde, la tienda muestra
+el catálogo inicial incluido en `js/data/seed-catalog.json`.
 
-<p align="center">
-  <a href="https://keniayh.github.io/by-yuito/">🌐 Ver sitio</a>
-  ·
-  <a href="https://www.instagram.com/by.yuito/">📷 Instagram</a>
-</p>
+> Para poner en marcha el panel: **[docs/ADMIN-SETUP.md](docs/ADMIN-SETUP.md)**.
 
----
-
-## ✦ Sobre el proyecto
-
-**YÜITO** es una tienda web estática creada para presentar el catálogo de productos hechos a mano del emprendimiento.
-
-El sitio está diseñado para mostrar los productos de forma visual, facilitar el contacto con la marca y mantener el catálogo organizado sin depender de un backend o una base de datos.
-
-### Características
-
-- 🧶 Catálogo de productos handmade.
-- 📱 Diseño responsive para dispositivos móviles y escritorio.
-- 🎨 Interfaz visual con identidad propia de YÜITO.
-- 🛍️ Información dinámica de productos y categorías.
-- 💬 Enlaces directos a WhatsApp e Instagram.
-- ✨ Animaciones, cursor personalizado, parallax y efectos de interacción.
-- ⚡ Sitio completamente estático, sin backend.
-
-## 🛠️ Tecnologías
-
-- **HTML5** — estructura y contenido.
-- **CSS3** — estilos, layout, responsive design y animaciones.
-- **JavaScript** — lógica, catálogo e interacciones.
-- **GitHub Pages** — despliegue del sitio.
-
-## 📁 Estructura
+## Estructura
 
 ```
-by-yuito/
-├── index.html
-├── assets/
-│   ├── favicon.svg
-│   └── images/
-│       └── products/
-├── css/
-│   ├── base.css
-│   ├── layout.css
-│   ├── components.css
-│   └── responsive.css
-└── js/
-    ├── config.js
-    ├── data/
-    │   └── content.js
-    ├── modules/
-    │   ├── catalog.js
-    │   ├── cursor.js
-    │   ├── links.js
-    │   ├── palette.js
-    │   ├── parallax.js
-    │   └── tilt.js
-    ├── core/
-    │   ├── loop.js
-    │   └── pointer.js
-    └── main.js
+index.html                 Tienda pública
+admin/index.html           Panel privado (noindex, con política CSP)
+css/                       base · layout · components · responsive · admin
+js/
+  config.js                WhatsApp, Instagram y datos PÚBLICOS de Supabase
+  lib/dom.js               Construcción segura de DOM (todo texto entra por textContent)
+  services/catalog-service.js   Lectura pública: Supabase → copia local → catálogo inicial
+  modules/                 catalog · hero · order · palette · cursor · parallax · reveal · links
+  core/                    loop · pointer
+  admin/                   api · imaging · ui · backup · catalog-format · views-* · app
+  data/seed-catalog.json   Los 6 productos originales (textos y mensajes de WhatsApp intactos)
+assets/images/products/    Fotografías recortadas (WebP con transparencia)
+supabase/migrations/       001 esquema+RLS · 002 almacenamiento · 003 registrar administradora
+supabase/tests/            Pruebas de las políticas sobre un Postgres real
+tests/                     Pruebas de formato, interfaz del panel (con Supabase simulado) y modo sin conexión
+tools/build-seed.mjs       Regenera el catálogo inicial a partir del contenido original
+vendor/                    supabase-js 2.118.0 (UMD, licencia MIT) para el panel
 ```
 
-## ⚙️ Personalización
+## Tipografía
 
-### WhatsApp e Instagram
+- **Fredoka** (se conserva: es la voz de la marca) para el nombre, los títulos, los números y las etiquetas.
+- **Nunito** para los textos de lectura.
+- **Cormorant Garamond** solo dentro del logo (sello), como en el original.
 
-Los datos de contacto y configuración principal se encuentran en:
+El bordado (puntada discontinua) se conserva como detalle: marca cada lámina del catálogo y los
+números de los pasos.
 
-```
-js/config.js
-```
+## Seguridad (resumen)
 
-### Catálogo
+- La clave que va en `js/config.js` es la *publishable*: es pública por diseño. **Nunca** se
+  publica la clave *secret* / *service_role*.
+- Los permisos los imponen las políticas RLS de Postgres: el público solo lee lo publicado y
+  únicamente la cuenta registrada en la tabla `admins` (una sola fila posible) puede escribir.
+- El registro público de usuarios debe estar desactivado en Supabase (ver la guía).
 
-Los productos, categorías y contenido del catálogo se gestionan desde:
-
-```
-js/data/content.js
-```
-
-Para agregar un producto:
-
-1. Añade la imagen en `assets/images/products/`.
-2. Agrega el producto en `js/data/content.js`.
-3. Abre el sitio para comprobar el resultado.
-
-### Identidad visual
-
-La paleta utilizada por los efectos visuales se puede ajustar desde:
+## Pruebas
 
 ```
-js/modules/palette.js
+node tests/format.test.js                      # formato de respaldo (Node)
+PGHOST=… PGUSER=postgres python3 supabase/tests/run_rls_tests.py   # políticas RLS (Postgres local)
+python3 -m http.server 8765 &                  # y luego, con Playwright instalado:
+node tests/admin.e2e.js                        # panel + tienda con Supabase SIMULADO
+node tests/offline.e2e.js                      # tienda sin conexión / sin configurar
 ```
 
-## 🚀 Desarrollo local
-
-No requiere Node.js, dependencias ni proceso de compilación.
-
-Puedes abrir directamente:
-
-```
-index.html
-```
-
-en un navegador.
-
-También puedes utilizar una extensión como **Live Server** en VS Code para trabajar con recarga automática.
-
-## 🌐 Despliegue
-
-El proyecto se publica mediante **GitHub Pages** directamente desde la rama `main`.
-
-Sitio:
-
-**https://keniayh.github.io/by-yuito/**
-
-## 📌 Estado
-
-**Activo** — proyecto en desarrollo y actualización continua del catálogo.
-
----
-
-<p align="center">
-  Hecho a mano con 🧶 · Hecho para YÜITO
-</p>
+Las pruebas de interfaz usan un Supabase simulado (`tests/mock-supabase.js`); no prueban un
+proyecto Supabase real.

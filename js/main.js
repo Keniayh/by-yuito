@@ -4,6 +4,7 @@
     Y.links.hydrate();
     Y.catalog.init();
     Y.order.init();
+    Y.reveal.init();
     Y.palette.init();
     Y.cursor.init();
     Y.parallax.init();
