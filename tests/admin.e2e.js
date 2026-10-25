@@ -122,7 +122,7 @@ async function login(p, email = 'duena@yuito.test', pw = 'secreta123') { await p
   await t('solo se muestran los publicados (el oculto no aparece)', async () => { const tx = await pub.textContent('#sheet'); assert(!/SECRETO/.test(tx)); assert.equal(await pub.locator('.piece').count(), 2); });
   await t('texto con HTML se muestra literal y no ejecuta nada (XSS)', async () => { assert.equal(await pub.evaluate(() => window.__xss), undefined); assert(/<img src=x/.test(await pub.textContent('.piece h3'))); assert.equal(await pub.locator('.piece h3 img, .piece h3 b').count(), 0); });
   await t('precio con formato y «Consultar precio» cuando no hay', async () => { const pr = await pub.locator('.price').allTextContents(); assert(/120\.000/.test(pr[0])); assert.equal(pr[1], 'Consultar precio'); });
-  await t('color inválido se ignora; agotado se señala', async () => { assert(await pub.locator('.is-out .tag.out').count() === 1); assert.equal(await pub.locator('.is-out .plate').getAttribute('style'), null); assert.match(await pub.locator('.piece >> nth=0 >> .plate').getAttribute('style'), /#cfc3e8/); });
+  await t('color inválido se ignora (usa pastel de respaldo); agotado se señala', async () => { assert(await pub.locator('.is-out .tag.out').count() === 1); const st = await pub.locator('.piece.is-out').evaluate(n => n.style.getPropertyValue('--tile').trim()); assert.match(st, /^#[0-9a-f]{6}$/i, st); assert.equal(await pub.locator('.piece >> nth=0').evaluate(n => n.style.getPropertyValue('--tile').trim()), '#cfc3e8'); });
   await t('URL de la foto con espacios se codifica', async () => { assert.match(await pub.locator('.plate img').first().getAttribute('src'), /product-images\/products\/visible\/a%20b\.webp$/); });
   await pub.context().close();
 

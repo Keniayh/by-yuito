@@ -1,13 +1,14 @@
-/* Profundidad: el logo gira suavemente según el puntero */
+/* Profundidad: las burbujas y el logo reaccionan al puntero */
 window.Yuito = window.Yuito || {};
 (function (Y) {
   Y.parallax = {
     init: function () {
-      var emblem = document.getElementById('emblem');
-      if (Y.env.reducedMotion || !emblem || !Y.env.finePointer) return;
+      if (Y.env.reducedMotion || !Y.env.finePointer) return;
+      var layers = document.querySelectorAll('[data-d]'), emblem = document.getElementById('emblem');
       Y.loop.add(function () {
         var p = Y.pointer;
-        emblem.style.transform = 'rotateY(' + p.nx * 20 + 'deg) rotateX(' + (-p.ny * 16) + 'deg)';
+        layers.forEach(function (el) { var d = +el.dataset.d; el.style.transform = 'translate(' + p.nx * d + 'px,' + p.ny * d + 'px)'; });
+        if (emblem) emblem.style.transform = 'rotateY(' + p.nx * 20 + 'deg) rotateX(' + (-p.ny * 16) + 'deg)';
       });
     }
   };

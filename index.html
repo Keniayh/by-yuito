@@ -59,6 +59,7 @@
       </div>
     </div>
     <div class="art">
+      <div class="blob b1" data-d="28"></div><div class="blob b2" data-d="-24"></div><div class="blob b3" data-d="36"></div><div class="blob b4" data-d="-32"></div>
       <div class="emblem" id="emblem">
         <svg viewBox="0 0 400 400" role="img" aria-label="Logo de Yüito Handmade">
           <circle class="bg" cx="200" cy="200" r="196"/>
@@ -76,6 +77,12 @@
         </svg>
       </div>
     </div>
+  </section>
+
+  <section class="wrap blk" id="categorias" aria-labelledby="t-cats" hidden>
+    <h2 id="t-cats">Lo que elaboramos</h2>
+    <p class="sub">Cada pieza se teje a mano y puede personalizarse.</p>
+    <div class="cats" id="cat-grid"></div>
   </section>
 
   <section class="wrap blk" id="catalogo" aria-labelledby="t-catalogo">
@@ -105,7 +112,7 @@
         <h2 id="t-pedido">Solicite su pedido</h2>
         <p class="sub">Complete los datos y se abrirá WhatsApp con el mensaje listo para enviar. No se envía nada hasta que usted lo confirme allí.</p>
       </div>
-      <form class="form" id="order-form" novalidate>
+      <form class="form card" id="order-form" novalidate>
         <label for="o-name">Su nombre</label>
         <input id="o-name" name="name" type="text" autocomplete="name" maxlength="80" required>
         <p class="err" id="o-name-err" hidden></p>
@@ -142,6 +149,7 @@
 <script src="js/modules/cursor.js" defer></script>
 <script src="js/modules/parallax.js" defer></script>
 <script src="js/modules/links.js" defer></script>
+<script src="js/modules/tilt.js" defer></script>
 <script src="js/modules/catalog.js" defer></script>
 <script src="js/modules/hero.js" defer></script>
 <script src="js/modules/order.js" defer></script>

@@ -8,12 +8,13 @@
 .nav a:hover{color:var(--deep);text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
 
 .hero{min-height:min(72vh,700px);display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:32px;padding-block:48px 96px}
-h1{font-size:clamp(4.4rem,14vw,9.2rem);line-height:.95;color:var(--deep);font-weight:700;letter-spacing:2px}
+h1{font-size:clamp(4.6rem,15vw,9.6rem);line-height:.95;color:var(--brand);font-weight:700;letter-spacing:2px;
+  text-shadow:0 2px 0 var(--deep),0 4px 0 var(--deep),0 6px 0 var(--deep),0 8px 0 color-mix(in srgb,var(--deep) 70%,#000),0 22px 26px rgba(0,0,0,.28)}
 .kick{font-family:var(--f-display);font-size:1.5rem;font-weight:500;margin:18px 0 6px}
 .lead{color:var(--ink);font-size:1.1rem;margin-bottom:26px;max-width:440px}
 .actions{display:flex;flex-wrap:wrap;gap:12px}
 .actions.center{justify-content:center}
-.art{perspective:1000px}
+.art{perspective:1000px;position:relative}
 .roll{margin-top:34px;max-width:460px}
 .roll-label{font-family:var(--f-display);font-size:1rem;color:var(--ink);margin-bottom:8px}
 .roll-list{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
@@ -21,13 +22,14 @@ h1{font-size:clamp(4.4rem,14vw,9.2rem);line-height:.95;color:var(--deep);font-we
 .blk{padding-block:72px 8px}
 .head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px 40px;flex-wrap:wrap;margin-bottom:34px}
 .sub{color:var(--ink);max-width:540px;margin-top:10px}
-.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:44px 28px}
+.sheet,.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:34px 28px;perspective:1000px;padding-bottom:30px}
+.sheet>.piece:nth-child(3n+2),.cats>.card:nth-child(3n+2){margin-top:34px}
 .state{color:var(--muted);padding:12px 0 28px}
 
-.band{background:var(--bg2);margin-top:84px;padding-block:80px}
-.band.deep{background:var(--deep);color:var(--on-deep);margin-top:84px}
+.band{background:var(--bg2);margin-top:84px;padding-block:80px;border-radius:48px 48px 0 0}
+.band.deep{background:var(--deep);color:var(--on-deep);margin-top:0;border-radius:0}
 .steps{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:34px;margin-top:44px;position:relative}
-.steps::before{content:"";position:absolute;left:12%;right:12%;top:41px;border-top:2px dashed var(--brand)}
+.steps::before{content:"";position:absolute;left:12%;right:12%;top:29px;border-top:4px dotted var(--brand)}
 .steps li{text-align:center;position:relative}
 .steps p{max-width:300px;margin:0 auto;font-size:1.1rem}
 
