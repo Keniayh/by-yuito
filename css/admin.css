@@ -90,3 +90,8 @@ body.admin{background:var(--bg)}
 .gthumb img{width:100%;height:100%;object-fit:contain;display:block}
 .gthumb.busy img{opacity:.45}
 .gbadge{position:absolute;inset:auto 4px 4px;font-size:.75rem;font-weight:700;background:#2f2c26;color:#f7ecd9;border-radius:6px;padding:2px 4px;text-align:center}
+
+/* Selector de versión de la foto (original / recortes) */
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.segb{min-height:44px;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--bg);font-weight:700;font-size:.9rem;cursor:pointer}
+.segb[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:var(--on-deep)}

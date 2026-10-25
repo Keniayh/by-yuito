@@ -63,15 +63,17 @@ iniciar sesión **no** puede ver productos ocultos.
 Fusione la rama `feature/admin-panel` en `main`; GitHub Pages (despliegue desde rama `main`, raíz)
 publicará el sitio. No se necesita ningún secreto en GitHub.
 
-## Fotos: quitar el fondo automáticamente
+## Fotos: quitar el fondo
 
-Al añadir fotos en el editor, la casilla **«Quitar el fondo automáticamente»** viene marcada: el panel
-recorta la pieza en el propio dispositivo (no se envía la foto a ningún servicio externo), la
-encuadra y la guarda con transparencia. Si el recorte no queda bien, toque **«Usar original»**.
+Cada foto del editor tiene tres opciones: **Original** (tal cual), **Sin fondo · 1 pieza** y
+**Sin fondo · varias piezas**. El recorte se hace en el propio dispositivo; la foto no se envía a
+ningún servicio externo. Nada cambia en la tienda hasta pulsar **Guardar**.
 
-- La primera vez descarga el modelo (≈ 44 MB, mejor con wifi); después queda guardado en el navegador.
-- Funciona mejor con la pieza completa sobre un fondo liso y con buena luz.
-- Se usa el modelo «silueta» (proyecto rembg, MIT) con onnxruntime-web (MIT).
+- *1 pieza* (modelo «silueta»): mejor cuando la foto muestra una sola pieza.
+- *Varias piezas* (modelo ISNet, cuantizado): mejor para collages o varias piezas juntas.
+- Cada modelo descarga ≈ 44 MB la primera vez que se usa (mejor con wifi); luego queda guardado.
+- La casilla «Quitar el fondo automáticamente» (1 pieza) viene desmarcada: es opcional.
+- Si la imagen trae un cuadriculado «falso» de transparencia dibujado, puede quedar algún resto.
 
 ## Respaldos y límites del plan gratuito
 

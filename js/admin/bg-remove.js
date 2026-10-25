@@ -1,19 +1,24 @@
-/* Quitar el fondo de una foto en el propio navegador (modelo "silueta", U²-Net reducido).
-   La primera vez descarga el modelo (≈44 MB) y lo guarda en la caché del navegador. */
+/* Quitar el fondo de una foto en el propio navegador.
+   'una'    → modelo "silueta" (U²-Net reducido): mejor con UNA pieza por foto.
+   'varias' → modelo ISNet (DIS, cuantizado a 8 bits): mejor con VARIAS piezas en la misma foto.
+   Cada modelo pesa ≈44 MB; se descarga la primera vez que se usa y queda en la caché del navegador. */
 window.Yuito = window.Yuito || {};
 (function (Y) {
-  var MODEL_URL = new URL('../vendor/models/silueta.onnx', location.href).href, CACHE = 'yuito-modelos-v1', SIZE = 320;
-  var MEAN = [0.485, 0.456, 0.406], STD = [0.229, 0.224, 0.225];
-  var sessionP = null;
+  var CACHE = 'yuito-modelos-v1';
+  var MODELS = {
+    una:    { url: new URL('../vendor/models/silueta.onnx', location.href).href, size: 320,  mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225], bytes: 44173029 },
+    varias: { url: new URL('../vendor/models/isnet-q8.onnx', location.href).href, size: 1024, mean: [0.5, 0.5, 0.5],       std: [1, 1, 1],             bytes: 45000000 }
+  };
+  var sessions = {};
 
-  function fetchModel(progress) {
+  function fetchModel(M, progress) { var MODEL_URL = M.url;
     var cacheP = ('caches' in window) ? caches.open(CACHE).catch(function () { return null; }) : Promise.resolve(null);
     return cacheP.then(function (cache) {
       return (cache ? cache.match(MODEL_URL) : Promise.resolve(null)).then(function (hit) {
         if (hit) { if (progress) progress(1); return hit.arrayBuffer(); }
         return fetch(MODEL_URL).then(function (r) {
           if (!r.ok) throw new Error('No se pudo descargar el modelo (HTTP ' + r.status + ').');
-          var total = +r.headers.get('content-length') || 44173029, got = 0, chunks = [], reader = r.body.getReader();
+          var total = +r.headers.get('content-length') || M.bytes, got = 0, chunks = [], reader = r.body.getReader();
           function pump() {
             return reader.read().then(function (x) {
               if (x.done) return;
@@ -31,15 +36,16 @@ window.Yuito = window.Yuito || {};
     });
   }
 
-  function session(progress) {
+  function session(name, progress) {
     if (!window.ort) return Promise.reject(new Error('El quitado de fondo no está disponible en este navegador.'));
-    if (!sessionP) {
+    var M = MODELS[name];
+    if (!sessions[name]) {
       ort.env.wasm.numThreads = 1;              // GitHub Pages no permite hilos (sin aislamiento de origen)
       ort.env.wasm.wasmPaths = new URL('../vendor/ort/', location.href).href;  // ruta absoluta (si no, se resuelve desde el script)
-      sessionP = fetchModel(progress).then(function (buf) { return ort.InferenceSession.create(buf, { executionProviders: ['wasm'] }); });
-      sessionP.catch(function () { sessionP = null; });
+      sessions[name] = fetchModel(M, progress).then(function (buf) { return ort.InferenceSession.create(buf, { executionProviders: ['wasm'] }); });
+      sessions[name].catch(function () { sessions[name] = null; });
     }
-    return sessionP;
+    return sessions[name];
   }
 
   function loadImage(blob) {
@@ -51,7 +57,8 @@ window.Yuito = window.Yuito || {};
   // Devuelve un Blob con fondo transparente, recortado al contorno de la pieza.
   function remove(blob, progress, opts) {
     var maxSide = (opts && opts.maxSide) || 1600, quality = (opts && opts.quality) || 0.95;
-    return Promise.all([session(progress), loadImage(blob)]).then(function (r) {
+    var name = (opts && MODELS[opts.model]) ? opts.model : 'una', M = MODELS[name], SIZE = M.size, MEAN = M.mean, STD = M.std;
+    return Promise.all([session(name, progress), loadImage(blob)]).then(function (r) {
       var s = r[0], bmp = r[1], k = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
       var W = Math.round(bmp.width * k), H = Math.round(bmp.height * k);
       // 1) Entrada del modelo: 320×320, RGB normalizado como en rembg

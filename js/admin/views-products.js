@@ -121,27 +121,39 @@ window.Yuito = window.Yuito || {};
     var canCut = !!(Y.bgRemove && Y.bgRemove.available());
     var autoCut = inp('e-autocut', 'checkbox'); autoCut.checked = false; autoCut.disabled = !canCut;  // opcional: por defecto se sube la foto tal cual
 
-    function revoke(im) { [im.orig, im.cut].forEach(function (v) { if (v && /^blob:/.test(v.url)) URL.revokeObjectURL(v.url); }); }
-    function use(im, which) { var v = im[which]; im.blob = v.blob; im.url = v.url; im.using = which; }
-    // Botón por foto nueva: quitar fondo, o alternar entre la versión sin fondo y la original.
+    // Versiones de cada foto: 'orig' (tal cual) y los recortes por modelo ('una' = una pieza, 'varias' = varias piezas).
+    function revoke(im) { [im.orig].concat(Object.keys(im.cuts || {}).map(function (k) { return im.cuts[k]; })).forEach(function (v) { if (v && /^blob:/.test(v.url)) URL.revokeObjectURL(v.url); }); }
+    function use(im, which) { var v = which === 'orig' ? im.orig : im.cuts[which]; im.blob = v.blob; im.url = v.url; im.using = which; im.cut = which === 'orig' ? null : v; }
+    function isCut(im) { return !!im.using && im.using !== 'orig'; }
+    var CHOICES = [['orig', 'Original'], ['una', 'Sin fondo · 1 pieza'], ['varias', 'Sin fondo · varias piezas']];
+    // Selector por foto (nuevas y ya guardadas): original o uno de los dos recortes.
     function bgButton(im) {
-      if ((!im.orig && !im.id) || im.busy) return null;   // fotos nuevas y fotos ya guardadas
-      if (im.cut) return el('button', { type: 'button', class: 'btn sm alt', text: im.using === 'cut' ? 'Usar original' : 'Usar sin fondo',
-        onclick: function () { use(im, im.using === 'cut' ? 'orig' : 'cut'); drawGallery(); } });
-      return canCut ? el('button', { type: 'button', class: 'btn sm alt', text: 'Quitar fondo', onclick: function () { cut(im); } }) : null;
+      if (im.busy || !canCut) return null;
+      var current = im.using || 'orig';
+      return el('div', { class: 'seg', role: 'group', 'aria-label': 'Fondo de la foto' }, CHOICES.map(function (c) {
+        return el('button', { type: 'button', class: 'segb', 'aria-pressed': current === c[0] ? 'true' : 'false', text: c[1],
+          onclick: function () {
+            if (c[0] === current) return;
+            if (c[0] === 'orig') { if (im.orig) use(im, 'orig'); dirty = true; drawGallery(); return; }
+            if (im.cuts && im.cuts[c[0]]) { use(im, c[0]); dirty = true; drawGallery(); return; }
+            cut(im, c[0]);
+          } });
+      }));
     }
     var queue = Promise.resolve();
-    function cut(im) {
+    function cut(im, model) {
+      model = model || 'una';
       im.busy = true; drawGallery();
       queue = queue.then(function () {
         // Foto ya guardada: se descarga de Supabase para procesarla; la original queda intacta hasta guardar.
         var source = im.src ? Promise.resolve(im.src) : im.orig ? Promise.resolve(im.orig.blob)
           : fetch(im.url).then(function (r) { if (!r.ok) throw new Error('no se pudo descargar la foto guardada.'); return r.blob(); })
               .then(function (b) { im.orig = { blob: b, url: im.url }; im.using = 'orig'; return b; });
-        return source.then(function (src) { return Y.bgRemove.remove(src, function (f) { fileMsg.textContent = f < 1 ? 'Preparando el quitado de fondo (solo la primera vez): ' + Math.round(f * 100) + ' %' : 'Quitando el fondo…'; })
+        return source.then(function (src) { return Y.bgRemove.remove(src, function (f) { fileMsg.textContent = f < 1 ? 'Preparando el recorte (solo la primera vez): ' + Math.round(f * 100) + ' %' : 'Quitando el fondo…'; }, { model: model })
           .then(function (b) {
             if (b.size > 5 * 1024 * 1024) throw new Error('la imagen resultante pesa más de 5 MB.');
-            im.cut = { blob: b, url: URL.createObjectURL(b) }; use(im, 'cut'); mode.value = 'recorte'; dirty = true; fileMsg.textContent = 'Fondo quitado. Si no quedó bien, toque «Usar original».';
+            im.cuts = im.cuts || {}; im.cuts[model] = { blob: b, url: URL.createObjectURL(b) }; use(im, model); mode.value = 'recorte'; dirty = true;
+            fileMsg.textContent = 'Fondo quitado. Si no quedó bien, pruebe la otra opción de recorte o elija «Original».';
           }); }).then(null, function (e) { fileMsg.textContent = 'No se pudo quitar el fondo: ' + e.message + ' Se usará la foto original.'; })
           .then(function () { im.busy = false; drawGallery(); });
       });
@@ -151,8 +163,8 @@ window.Yuito = window.Yuito || {};
       var room = 8 - imgs.length; if (chosen.length > room) { fileMsg.textContent = 'Máximo 8 fotos por producto; se tomarán las primeras ' + Math.max(room, 0) + '.'; chosen = chosen.slice(0, Math.max(room, 0)); }
       chosen.reduce(function (pr, f0) {
         return pr.then(function () { return I.prepare(f0).then(function (blob) {
-            var im = { src: f0, orig: { blob: blob, url: URL.createObjectURL(blob) }, cut: null, alt: '' }; use(im, 'orig'); imgs.push(im); drawGallery();
-            if (autoCut.checked) cut(im); },
+            var im = { src: f0, orig: { blob: blob, url: URL.createObjectURL(blob) }, cuts: {}, cut: null, alt: '' }; use(im, 'orig'); imgs.push(im); drawGallery();
+            if (autoCut.checked) cut(im, 'una'); },
           function (e) { fileMsg.textContent = (fileMsg.textContent ? fileMsg.textContent + ' ' : '') + e.message; }); });
       }, Promise.resolve());
     });
@@ -169,7 +181,7 @@ window.Yuito = window.Yuito || {};
       el('div', { class: 'fld chk' }, [useColor, el('label', { for: 'e-usecolor', text: 'Usar un color propio para la lámina' }), color]),
       U.field('e-mode', 'Cómo mostrar la foto', mode),
       el('fieldset', { class: 'fld' }, [el('legend', { text: 'Fotografías' }), gallery,
-        el('div', { class: 'fld chk' }, [autoCut, el('label', { for: 'e-autocut', text: canCut ? 'Quitar el fondo automáticamente a las fotos nuevas' : 'Quitar el fondo (no disponible en este navegador)' })]),
+        el('div', { class: 'fld chk' }, [autoCut, el('label', { for: 'e-autocut', text: canCut ? 'Quitar el fondo automáticamente a las fotos nuevas (una pieza)' : 'Quitar el fondo (no disponible en este navegador)' })]),
         el('label', { for: 'e-files', class: 'btn sm alt filebtn', text: 'Añadir fotos' }), file, fileMsg,
         el('p', { class: 'hint left', text: 'JPEG, PNG o WebP. Se optimizan a un máximo de 1600 px. La primera foto es la principal. El fondo se quita en este dispositivo; la primera vez descarga unos 44 MB (mejor con wifi).' })]),
       U.field('e-cta', 'Texto del botón (opcional)', cta), U.field('e-wam', 'Mensaje de WhatsApp (opcional)', wam, 'Si lo deja vacío se usa «Hola, quisiera información sobre …».'),
@@ -217,7 +229,7 @@ window.Yuito = window.Yuito || {};
         step = 'subir las fotos'; var chain = Promise.resolve();
         imgs.forEach(function (im, i) {
           chain = chain.then(function () {
-            if (im.id && im.using === 'cut') {   // foto ya guardada a la que se le quitó el fondo: se reemplaza
+            if (im.id && isCut(im)) {   // foto ya guardada a la que se le quitó el fondo: se reemplaza
               var np = 'products/' + savedRow.slug + '/' + I.randomName(im.cut.blob.type);
               return A.uploadImage(np, im.cut.blob).then(function () { return A.patchImageRow(im.id, { storage_path: np, alt: im.alt, position: i }); })
                 .then(function () { return A.removeFiles([im.path]).catch(function () {}); });

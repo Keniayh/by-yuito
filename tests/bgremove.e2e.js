@@ -29,7 +29,7 @@ let pass = 0, fail = 0; const t = async (n, f) => { try { await f(); pass++; con
   console.log('       resultado:', JSON.stringify(info));
   await t('resultado WebP/PNG con transparencia', async () => { assert(info.transp > 0.05); });
   await t('esquinas transparentes y pieza opaca', async () => { assert(info.corners.every(v => v < 30), info.corners); assert(info.opaque > 0.2, info.opaque); });
-  await t('«Usar original» y «Usar sin fondo» alternan', async () => { const s1 = await p.getAttribute('.gthumb img', 'src'); await p.click('text=Usar original'); const s2 = await p.getAttribute('.gthumb img', 'src'); assert.notEqual(s1, s2); await p.click('text=Usar sin fondo'); assert.equal(await p.getAttribute('.gthumb img', 'src'), s1); });
+  await t('«Original» y «Sin fondo · 1 pieza» alternan', async () => { const s1 = await p.getAttribute('.gthumb img', 'src'); await p.click('.segb:has-text("Original")'); const s2 = await p.getAttribute('.gthumb img', 'src'); assert.notEqual(s1, s2); await p.click('.segb:has-text("1 pieza")'); assert.equal(await p.getAttribute('.gthumb img', 'src'), s1); });
   await t('al guardar se sube la versión sin fondo', async () => { await p.fill('#e-name', 'Prueba fondo'); await p.click('.editor button[type=submit]'); await p.waitForSelector('#dlg-edit', { state: 'hidden' });
     const up = await p.evaluate(() => { const f = Object.entries(window.__mockState.files)[0]; return f ? [f[0], f[1].type, f[1].size] : null; }); assert(up && /\.(webp|png)$/.test(up[0]) && /webp|png/.test(up[1]), JSON.stringify(up)); });
   const b64 = await p.evaluate(async () => { const f = Object.values(window.__mockState.files)[0]; const buf = new Uint8Array(await f.arrayBuffer()); let s = ''; for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000)); return [f.type, btoa(s)]; });
@@ -43,11 +43,18 @@ let pass = 0, fail = 0; const t = async (n, f) => { try { await f(); pass++; con
       s.product_images.push({ id: 'iv', product_id: 'pv', storage_path: 'products/vieja/original.png', alt: 'vieja', position: 0 }); s.files['products/vieja/original.png'] = blob; });
     await p.click('.tab:has-text("Categorías")'); await p.click('.tab:has-text("Productos")'); await p.waitForSelector('.prow[data-slug=vieja]');
     await p.locator('.prow[data-slug=vieja]').getByRole('button', { name: 'Editar' }).click(); await p.waitForSelector('.gitem');
-    await p.click('.gitem >> text=Quitar fondo'); await p.waitForSelector('.gitem >> text=Usar original', { timeout: 60000 });
+    await p.click('.gitem .segb:has-text("1 pieza")'); await p.waitForSelector('.gitem .segb[aria-pressed=true]:has-text("1 pieza")', { timeout: 60000 });
     assert.equal(await p.inputValue('#e-mode'), 'recorte');
     await p.click('.editor button[type=submit]'); await p.waitForSelector('#dlg-edit', { state: 'hidden' });
     const st = await p.evaluate(() => { const s = window.__mockState, im = s.product_images.filter(i => i.product_id === 'pv'); return { n: im.length, path: im[0].storage_path, alt: im[0].alt, old: !!s.files['products/vieja/original.png'], nuevo: !!s.files[im[0].storage_path], mode: s.products.find(x => x.id === 'pv').image_mode }; });
     assert.equal(st.n, 1, 'no debe duplicar'); assert(/\.(webp|png)$/.test(st.path) && st.path !== 'products/vieja/original.png', st.path); assert(st.nuevo); assert(!st.old, 'debe borrar el archivo viejo'); assert.equal(st.alt, 'vieja'); assert.equal(st.mode, 'recorte'); });
+  if (process.env.COLLAGE) await t('«varias piezas» (ISNet) recorta un collage', async () => {
+    await p.click('#pnew'); await p.waitForSelector('#e-files'); await p.setInputFiles('#e-files', process.env.COLLAGE); await p.waitForSelector('.gitem .segb');
+    const t2 = Date.now(); await p.click('.gitem .segb:has-text("varias")'); await p.waitForSelector('.gitem .segb[aria-pressed=true]:has-text("varias")', { timeout: 240000 });
+    console.log('       varias piezas (incluye descarga del modelo):', ((Date.now() - t2) / 1000).toFixed(1), 's');
+    await p.fill('#e-name', 'Collage'); await p.click('.editor button[type=submit]'); await p.waitForSelector('#dlg-edit', { state: 'hidden' });
+    const r = await p.evaluate(async () => { const s = window.__mockState, pr = s.products.find(x => x.name === 'Collage'), im = s.product_images.find(i => i.product_id === pr.id), f = s.files[im.storage_path]; const buf = new Uint8Array(await f.arrayBuffer()); let x = ''; for (let i = 0; i < buf.length; i += 0x8000) x += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000)); return btoa(x); });
+    fs.writeFileSync(SHOTS + '/collage-navegador.webp', Buffer.from(r, 'base64')); });
   await p.screenshot({ path: SHOTS + '/editor.png' });
   await t('sin errores de consola (incluida la política CSP)', async () => assert.equal(errors.length, 0, errors.join(' | ')));
   console.log(`Resultado: ${pass} correctas, ${fail} fallidas`); await b.close(); process.exit(fail ? 1 : 0);
