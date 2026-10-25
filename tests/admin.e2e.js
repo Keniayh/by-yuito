@@ -132,11 +132,12 @@ async function login(p, email = 'duena@yuito.test', pw = 'secreta123') { await p
   await m.click('.tab:has-text("Respaldo")'); await m.click('#bk-seed'); await m.click('#bk-apply'); await m.waitForFunction(() => /Listo\./.test(document.querySelector('.bk-out').textContent), null, { timeout: 20000 });
   await m.click('.tab:has-text("Productos")'); await m.waitForSelector('.prow');
   await m.screenshot({ path: SHOTS + '/movil-lista.png', fullPage: true });
+  await t('móvil: se ve el botón «Ver tienda»', async () => assert(await m.locator('.abar-act a:has-text("Ver tienda")').isVisible()));
   await t('móvil: sin desbordamiento horizontal en la lista', async () => assert.equal(await m.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0));
   await t('móvil: botones tocables ≥ 44 px', async () => { const small = await m.evaluate(() => [...document.querySelectorAll('.prow button, .tab, #pnew, #logout')].filter(b => b.offsetParent && (b.getBoundingClientRect().height < 43.5 || b.getBoundingClientRect().width < 43.5)).map(b => b.textContent + ':' + Math.round(b.getBoundingClientRect().width) + 'x' + Math.round(b.getBoundingClientRect().height))); assert.equal(small.length, 0, small.join(',')); });
   await m.click('#pnew'); await m.waitForSelector('#e-name'); await m.setInputFiles('#e-files', FX + '/small.jpg'); await m.waitForSelector('.gitem'); await m.fill('#e-name', 'Prueba móvil');
   await m.screenshot({ path: SHOTS + '/movil-editor.png' });
-  await t('móvil: el editor ocupa la pantalla sin desbordar', async () => { const o = await m.evaluate(() => { const d = document.getElementById('dlg-edit'); return [d.scrollWidth - d.clientWidth, Math.round(d.getBoundingClientRect().width)]; }); assert.equal(o[0], 0); assert.equal(o[1], 390); });
+  await t('móvil: el editor aparece centrado y sin desbordar', async () => { const o = await m.evaluate(() => { const d = document.getElementById('dlg-edit'), r = d.getBoundingClientRect(); return [d.scrollWidth - d.clientWidth, Math.round(r.left), Math.round(innerWidth - r.right)]; }); assert.equal(o[0], 0); assert(Math.abs(o[1] - o[2]) <= 1 && o[1] > 0, 'márgenes ' + o[1] + '/' + o[2]); });
   await m.context().close();
 
   console.log('Errores de consola/JS durante todas las pruebas:', errors.length, errors.slice(0, 5));
