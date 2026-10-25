@@ -1,7 +1,8 @@
 /* Vista del catálogo: carga, filtros por categoría, tarjetas ("láminas") y estados. */
 window.Yuito = window.Yuito || {};
 (function (Y) {
-  var el = Y.dom.el, grid, state, chips, products = [], active = 'todo';
+  var el = Y.dom.el, grid, state, chips, pager, products = [], active = 'todo', page = 1;
+  var PER_PAGE = 9;   // productos por página (3 filas de 3 en computador)
   // Colores de respaldo (cuando la pieza no tiene color propio) e íconos de categoría.
   var PASTEL = ['#d9cffa', '#bfeedb', '#fbe9a8', '#cfe0f5', '#f5c9d6', '#e6d2c2'];
   var ICON = { bolsos: '👜', amigurumis: '🧸', otros: '🧶' };
@@ -56,18 +57,46 @@ window.Yuito = window.Yuito || {};
     ]);
   }
 
+  // Números visibles: primera, última, la actual y sus vecinas; el resto se resume con «…».
+  function pageNumbers(cur, total) {
+    var out = [], last = 0;
+    for (var n = 1; n <= total; n++) {
+      if (n === 1 || n === total || Math.abs(n - cur) <= 1) { if (last && n - last > 1) out.push('…'); out.push(n); last = n; }
+    }
+    return out;
+  }
+
+  function goTo(n, scroll) {
+    page = n; renderGrid();
+    if (scroll) document.getElementById('catalogo').scrollIntoView({ behavior: Y.env.reducedMotion ? 'auto' : 'smooth' });
+  }
+
+  function renderPager(total) {
+    Y.dom.clear(pager); pager.hidden = total < 2;
+    if (total < 2) return;
+    pager.appendChild(el('button', { type: 'button', class: 'pg nav', disabled: page === 1, 'aria-label': 'Página anterior', onclick: function () { goTo(page - 1, true); } }, [el('span', { 'aria-hidden': 'true', text: '‹' }), el('span', { class: 'lbl', text: ' Anterior' })]));
+    pageNumbers(page, total).forEach(function (n) {
+      if (n === '…') { pager.appendChild(el('span', { class: 'pg gap', 'aria-hidden': 'true', text: '…' })); return; }
+      pager.appendChild(el('button', { type: 'button', class: 'pg', text: String(n), 'aria-label': 'Página ' + n, 'aria-current': n === page ? 'page' : null, onclick: function () { goTo(n, true); } }));
+    });
+    pager.appendChild(el('button', { type: 'button', class: 'pg nav', disabled: page === total, 'aria-label': 'Página siguiente', onclick: function () { goTo(page + 1, true); } }, [el('span', { class: 'lbl', text: 'Siguiente ' }), el('span', { 'aria-hidden': 'true', text: '›' })]));
+  }
+
   function renderGrid() {
     Y.dom.clear(grid);
     var list = products.map(function (p, i) { return { p: p, i: i }; })
       .filter(function (x) { return active === 'todo' || (x.p.category && x.p.category.slug === active); });
-    list.forEach(function (x) { grid.appendChild(card(x.p, x.i)); });
+    var total = Math.max(1, Math.ceil(list.length / PER_PAGE));
+    if (page > total) page = total;
+    list.slice((page - 1) * PER_PAGE, page * PER_PAGE).forEach(function (x) { grid.appendChild(card(x.p, x.i)); });
+    renderPager(Math.ceil(list.length / PER_PAGE));
     Y.tilt.bind(grid.querySelectorAll('.piece'));
     state.hidden = list.length > 0;
     if (!list.length) state.textContent = products.length ? 'No hay piezas en esta categoría por ahora.' : 'Por ahora no hay piezas publicadas. Escríbanos por WhatsApp y le contamos qué podemos tejer para usted.';
   }
 
   function choose(slug) {
-    active = slug;
+    active = slug; page = 1;
     Array.prototype.forEach.call(chips.children, function (b) { b.setAttribute('aria-pressed', b.dataset.slug === slug ? 'true' : 'false'); });
     renderGrid();
   }
@@ -115,10 +144,19 @@ window.Yuito = window.Yuito || {};
     }, showError).catch(showError);
   }
 
+  // Muestra la página que contiene la pieza (lo usan los enlaces de la portada).
+  function reveal(slug) {
+    active = 'todo';
+    Array.prototype.forEach.call(chips.children, function (b) { b.setAttribute('aria-pressed', b.dataset.slug === 'todo' ? 'true' : 'false'); });
+    var i = -1; products.forEach(function (p, k) { if (p.slug === slug) i = k; });
+    if (i >= 0) { page = Math.floor(i / PER_PAGE) + 1; renderGrid(); }
+  }
+
   Y.catalog = {
+    reveal: reveal,
     products: [],
     init: function () {
-      grid = document.getElementById('sheet'); state = document.getElementById('state'); chips = document.getElementById('chips');
+      grid = document.getElementById('sheet'); state = document.getElementById('state'); chips = document.getElementById('chips'); pager = document.getElementById('pager');
       return load();
     },
     message: message

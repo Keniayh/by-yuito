@@ -12,7 +12,7 @@ async function newPage(browser, vp, opts = {}) {
   await page.addInitScript('window.__MOCK__ = ' + JSON.stringify({ users: [{ email: 'duena@yuito.test', password: 'secreta123', admin: true }, { email: 'otra@yuito.test', password: 'otra12345', admin: false }], state: opts.state }));
   if (opts.injectMock) await page.addInitScript(mock);
   await page.route('**/vendor/supabase-js-*.js', r => r.fulfill({ contentType: 'text/javascript', body: mock }));
-  await page.route('**/js/config.js', async r => { const res = await r.fetch(); let b = await res.text(); b = b.replace("url: ''", "url: 'https://mock.supabase.co'").replace("publishableKey: ''", "publishableKey: 'sb_publishable_test'"); r.fulfill({ response: res, body: b }); });
+  await page.route('**/js/config.js', async r => { const res = await r.fetch(); let b = await res.text(); b = b.replace(/url: '[^']*'/, "url: 'https://mock.supabase.co'").replace(/publishableKey: '[^']*'/, "publishableKey: 'sb_publishable_test'"); r.fulfill({ response: res, body: b }); });
   await page.route('**/fonts.g*', r => r.abort());
   page.on('pageerror', e => errors.push('pageerror: ' + e.message));
   page.on('console', m => { if (m.type() === 'error' && !/ERR_FAILED|ERR_TUNNEL|net::/.test(m.text())) errors.push('console: ' + m.text()); });

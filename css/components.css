@@ -87,3 +87,12 @@
 .rv{opacity:0;translate:0 18px;transition:opacity .6s ease,translate .6s ease}
 .rv.in{opacity:1;translate:0 0}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;translate:none;transition:none}}
+
+/* Paginación del catálogo */
+.pager{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:10px 0 20px}
+.pg{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:8px 14px;border-radius:999px;border:2px solid var(--deep);background:var(--bg);color:var(--deep);font-family:var(--f-display);font-weight:600;font-size:1rem;cursor:pointer;transition:background-color .15s,color .15s}
+.pg:hover:not(:disabled){background:var(--bg2)}
+.pg[aria-current="page"]{background:var(--deep);color:var(--on-deep)}
+.pg:disabled{opacity:.4;cursor:not-allowed}
+.pg.gap{border:0;background:none;min-width:auto;padding:8px 2px;cursor:default}
+@media (max-width:420px){.pg .lbl{display:none}.pg.nav{font-size:1.3rem;padding:0;width:44px;height:44px}}

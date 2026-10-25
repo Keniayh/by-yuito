@@ -2,10 +2,10 @@ const { chromium } = require('playwright'), fs = require('fs');
 (async () => {
   const b = await chromium.launch(); let ok = 0, bad = 0; const t = (n, c) => { c ? ok++ : bad++; console.log(c ? '  ok  ' : '  FALLA', n); };
   async function mk() { const ctx = await b.newContext(); const p = await ctx.newPage();
-    await p.route('**/js/config.js', async r => { const res = await r.fetch(); let s = await res.text(); s = s.replace("url: ''", "url: 'https://mock.supabase.co'").replace("publishableKey: ''", "publishableKey: 'k'"); r.fulfill({ response: res, body: s }); });
+    await p.route('**/js/config.js', async r => { const res = await r.fetch(); let s = await res.text(); s = s.replace(/url: '[^']*'/, "url: 'https://mock.supabase.co'").replace(/publishableKey: '[^']*'/, "publishableKey: 'k'"); r.fulfill({ response: res, body: s }); });
     await p.route('**/fonts.g*', r => r.abort()); return [ctx, p]; }
   // 1) sin config: admin muestra aviso
-  { const ctx = await b.newContext(), p = await ctx.newPage(); await p.route('**/fonts.g*', r => r.abort()); await p.goto('http://127.0.0.1:8765/admin/index.html'); await p.waitForSelector('h1');
+  { const ctx = await b.newContext(), p = await ctx.newPage(); await p.route('**/fonts.g*', r => r.abort()); await p.route('**/js/config.js', async r => { const res = await r.fetch(); r.fulfill({ response: res, body: (await res.text()).replace(/url: '[^']*'/, "url: ''").replace(/publishableKey: '[^']*'/, "publishableKey: ''") }); }); await p.goto('http://127.0.0.1:8765/admin/index.html'); await p.waitForSelector('h1');
     t('admin sin configurar muestra «Falta configurar Supabase»', /Falta configurar/.test(await p.textContent('h1'))); t('admin sin configurar no muestra el panel', await p.locator('#shell').isHidden()); await ctx.close(); }
   // 2) config pero red caída y sin copia → catálogo inicial
   { const [ctx, p] = await mk(); await p.route('https://mock.supabase.co/**', r => r.abort()); await p.goto('http://127.0.0.1:8765/index.html'); await p.waitForSelector('.piece', { timeout: 20000 });

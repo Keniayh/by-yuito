@@ -10,6 +10,7 @@ window.Yuito = window.Yuito || {};
       show.forEach(function (p) {
         var c = Y.dom.hex(p.tile_color);
         var a = Y.dom.el('a', { href: '#p-' + p.slug, text: p.name });
+        a.addEventListener('click', function () { Y.catalog.reveal(p.slug); });
         if (c) {
           a.style.setProperty('--dot', c);
           ['pointerenter', 'focus'].forEach(function (ev) { a.addEventListener(ev, function () { Y.palette.hold(c); }); });

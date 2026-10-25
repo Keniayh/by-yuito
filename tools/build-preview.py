@@ -1,9 +1,9 @@
 """Genera un HTML autónomo de la tienda (CSS, JS, catálogo inicial y fotos embebidos) para vista previa.
-Uso: python3 tools/build-preview.py salida.html"""
+Uso: python3 tools/build-preview.py salida.html [catalogo.json]"""
 import re, json, base64, sys
 html = open('index.html', encoding='utf-8').read()
 html = re.sub(r'<link rel="stylesheet" href="(css/[^"]+)">', lambda m: '<style>\n' + open(m.group(1), encoding='utf-8').read() + '\n</style>', html)
-seed = json.load(open('js/data/seed-catalog.json', encoding='utf-8'))
+seed = json.load(open(sys.argv[2] if len(sys.argv) > 2 else 'js/data/seed-catalog.json', encoding='utf-8'))
 for p in seed['products']:
     for im in p['images']:
         im['src'] = 'data:image/webp;base64,' + base64.b64encode(open(im['src'], 'rb').read()).decode()
