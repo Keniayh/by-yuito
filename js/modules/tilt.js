@@ -7,7 +7,7 @@ window.Yuito = window.Yuito || {};
       cards.forEach(function (c) {
         c.addEventListener('pointermove', function (e) {
           var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-          c.style.setProperty('--rx', (-y * 10) + 'deg'); c.style.setProperty('--ry', (x * 10) + 'deg');
+          c.style.setProperty('--rx', (-y * 6) + 'deg'); c.style.setProperty('--ry', (x * 6) + 'deg');
         });
         c.addEventListener('pointerleave', function () { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
       });

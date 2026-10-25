@@ -1,9 +1,8 @@
 /* Adaptación a pantallas pequeñas y movimiento reducido */
 @media (max-width:900px){
   .order{grid-template-columns:1fr;gap:24px}
-  .sheet,.cats{grid-template-columns:repeat(2,1fr);gap:30px 20px}
-  .sheet>.piece:nth-child(n),.cats>.card:nth-child(n){margin-top:0}
-  .sheet>.piece:nth-child(even),.cats>.card:nth-child(even){margin-top:28px}
+  .sheet{grid-template-columns:repeat(2,1fr);gap:28px 20px}
+  .cats{grid-template-columns:1fr}
 }
 @media (max-width:780px){
   .hero{grid-template-columns:1fr;min-height:auto;padding-block:28px 84px}
@@ -14,9 +13,8 @@
   .band.deep{margin-top:0;border-radius:0}
 }
 @media (max-width:560px){
-  .sheet,.cats{grid-template-columns:1fr;max-width:400px;margin-inline:auto}
-  .sheet>.piece:nth-child(n),.cats>.card:nth-child(n){margin-top:0}
-  .piece h3,.cat-name{font-size:1.45rem}
+  .sheet{grid-template-columns:1fr;max-width:400px;margin-inline:auto}
+  .piece h3{font-size:1.45rem}
 }
 @media (max-width:420px){.nav a:first-child{display:none}}
 @media (prefers-reduced-motion:reduce){.emblem svg{animation:none}.tail{animation:none;stroke-dashoffset:0}html{scroll-behavior:auto}.btn,.chip,.card,.piece{transition:none}}
