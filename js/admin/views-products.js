@@ -85,7 +85,7 @@ window.Yuito = window.Yuito || {};
     var descCount = el('p', { class: 'hint', text: desc.value.length + '/2000' }); desc.addEventListener('input', function () { descCount.textContent = desc.value.length + '/2000'; });
     var price = inp('e-price', 'text', { inputmode: 'numeric', autocomplete: 'off', placeholder: 'Vacío = «Consultar precio»' }); price.value = p && p.price_cop !== null ? String(p.price_cop) : '';
     var catSel = sel('e-cat', cats.map(function (c) { return [c.id, c.name]; }), p ? p.category_id : cats[0].id);
-    var kind = sel('e-kind', [['pieza', 'Pieza física'], ['servicio', 'Servicio por encargo (sin foto de producto)']], p ? p.kind : 'pieza');
+    var kind = sel('e-kind', [['pieza', 'Pieza física'], ['servicio', 'Servicio por encargo']], p ? p.kind : 'pieza');
     var status = sel('e-status', [['publicado', 'Publicado (visible en la tienda)'], ['oculto', 'Oculto (solo usted lo ve)']], p ? p.status : 'oculto');
     var avail = sel('e-avail', [['disponible', 'Disponible'], ['agotado', 'Agotado']], p ? p.availability : 'disponible');
     var feat = inp('e-feat', 'checkbox'); feat.checked = !!(p && p.featured);
@@ -119,7 +119,7 @@ window.Yuito = window.Yuito || {};
     var file = el('input', { id: 'e-files', type: 'file', accept: 'image/jpeg,image/png,image/webp', multiple: true });
     var fileMsg = el('p', { class: 'hint left', role: 'status' });
     var canCut = !!(Y.bgRemove && Y.bgRemove.available());
-    var autoCut = inp('e-autocut', 'checkbox'); autoCut.checked = canCut; autoCut.disabled = !canCut;
+    var autoCut = inp('e-autocut', 'checkbox'); autoCut.checked = false; autoCut.disabled = !canCut;  // opcional: por defecto se sube la foto tal cual
 
     function revoke(im) { [im.orig, im.cut].forEach(function (v) { if (v && /^blob:/.test(v.url)) URL.revokeObjectURL(v.url); }); }
     function use(im, which) { var v = im[which]; im.blob = v.blob; im.url = v.url; im.using = which; }

@@ -13,7 +13,8 @@ let pass = 0, fail = 0; const t = async (n, f) => { try { await f(); pass++; con
   await p.route('**/fonts.g*', r => r.abort());
   await p.goto('http://127.0.0.1:8765/admin/index.html'); await p.fill('#l-email', 'a@b.c'); await p.fill('#l-pass', 'x'); await p.click('button[type=submit]');
   await p.waitForSelector('#pnew'); await p.click('#pnew'); await p.waitForSelector('#e-autocut');
-  await t('la casilla «Quitar el fondo automáticamente» viene marcada', async () => assert(await p.isChecked('#e-autocut')));
+  await t('la casilla «Quitar el fondo automáticamente» viene DESMARCADA (es opcional)', async () => assert(!(await p.isChecked('#e-autocut'))));
+  await p.check('#e-autocut');
   const t0 = Date.now();
   await p.setInputFiles('#e-files', FOTO);
   await p.waitForSelector('.gthumb.busy'); await p.waitForSelector('.gthumb:not(.busy)', { timeout: 120000 });
@@ -33,7 +34,7 @@ let pass = 0, fail = 0; const t = async (n, f) => { try { await f(); pass++; con
     const up = await p.evaluate(() => { const f = Object.entries(window.__mockState.files)[0]; return f ? [f[0], f[1].type, f[1].size] : null; }); assert(up && /\.(webp|png)$/.test(up[0]) && /webp|png/.test(up[1]), JSON.stringify(up)); });
   const b64 = await p.evaluate(async () => { const f = Object.values(window.__mockState.files)[0]; const buf = new Uint8Array(await f.arrayBuffer()); let s = ''; for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000)); return [f.type, btoa(s)]; });
   fs.writeFileSync(SHOTS + '/recorte.' + (b64[0] === 'image/png' ? 'png' : 'webp'), Buffer.from(b64[1], 'base64')); console.log('       guardado', SHOTS + '/recorte', b64[0], Math.round(b64[1].length * 0.75 / 1024), 'KB');
-  await t('segunda foto usa el modelo en caché (más rápido)', async () => { await p.click('text=Editar'); await p.waitForSelector('#e-autocut'); const t1 = Date.now(); await p.setInputFiles('#e-files', FOTO); await p.waitForSelector('.gitem:nth-child(2) .gthumb:not(.busy)', { timeout: 60000 }); console.log('       segunda vez:', ((Date.now() - t1) / 1000).toFixed(1), 's'); });
+  await t('segunda foto usa el modelo en caché (más rápido)', async () => { await p.click('text=Editar'); await p.waitForSelector('#e-autocut'); await p.check('#e-autocut'); const t1 = Date.now(); await p.setInputFiles('#e-files', FOTO); await p.waitForSelector('.gitem:nth-child(2) .gthumb:not(.busy)', { timeout: 60000 }); console.log('       segunda vez:', ((Date.now() - t1) / 1000).toFixed(1), 's'); });
   await p.click('#dlg-edit >> text=Cerrar'); await p.click('#dlg-confirm button:has-text("Descartar")').catch(() => {});
   await t('foto YA guardada con fondo: botón «Quitar fondo» la reemplaza al guardar', async () => {
     await p.route('**/__fixture.png', r => r.fulfill({ path: FOTO, contentType: 'image/png' }));

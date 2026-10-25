@@ -11,9 +11,10 @@ window.Yuito = window.Yuito || {};
   function pad(n) { return (n < 10 ? '0' : '') + n; }
 
   function plate(p) {
-    var cls = 'plate' + (p.kind === 'servicio' ? ' ball' : '');
+    var ball = p.kind === 'servicio' && !p.images.length;
+    var cls = 'plate' + (ball ? ' ball' : '');
     var kids = [];
-    if (p.kind === 'servicio') {
+    if (ball) {
       kids.push(Y.dom.svgUse('ballsym', 'ballsvg'));
     } else if (p.images.length) {
       var img = el('img', { src: p.images[0].url, alt: p.images[0].alt || p.name, loading: 'lazy', decoding: 'async', class: p.image_mode === 'foto' ? 'cover' : 'cut' });
@@ -28,7 +29,7 @@ window.Yuito = window.Yuito || {};
   }
 
   function thumbs(p, box) {
-    if (p.images.length < 2 || p.kind === 'servicio') return null;
+    if (p.images.length < 2) return null;
     var row = el('div', { class: 'thumbs', role: 'group', 'aria-label': 'Fotografías de ' + p.name });
     p.images.forEach(function (im, i) {
       var b = el('button', { type: 'button', 'aria-label': 'Ver fotografía ' + (i + 1), 'aria-pressed': i === 0 ? 'true' : 'false',
