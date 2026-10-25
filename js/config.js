@@ -10,8 +10,8 @@ window.Yuito = window.Yuito || {};
     instagram: 'by.yuito',
     colorStepMs: 6500,          // duración de cada cambio de color del logo
     supabase: {
-      url: '',                  // p. ej. https://abcdefgh.supabase.co
-      publishableKey: ''        // p. ej. sb_publishable_...
+      url: 'https://idamsfevlvknrrspdlot.supabase.co',
+      publishableKey: 'sb_publishable_T5knFAON-I3U8g_wS2MlBA_f7Kapmsp'
     },
     bucket: 'product-images'
   };
