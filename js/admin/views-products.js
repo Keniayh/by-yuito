@@ -112,7 +112,7 @@ window.Yuito = window.Yuito || {};
             bgButton(im),
             el('button', { type: 'button', class: 'btn sm alt icon', 'aria-label': 'Mover foto antes', disabled: i === 0, text: '←', onclick: function () { imgs.splice(i - 1, 0, imgs.splice(i, 1)[0]); drawGallery(); } }),
             el('button', { type: 'button', class: 'btn sm alt icon', 'aria-label': 'Mover foto después', disabled: i === imgs.length - 1, text: '→', onclick: function () { imgs.splice(i + 1, 0, imgs.splice(i, 1)[0]); drawGallery(); } }),
-            el('button', { type: 'button', class: 'btn sm alt danger-o', text: 'Quitar', disabled: !!im.busy, onclick: function () { if (im.id) removed.push(im); else revoke(im); imgs.splice(i, 1); drawGallery(); } })])])]));
+            el('button', { type: 'button', class: 'btn sm alt danger-o', text: 'Eliminar foto', 'aria-label': 'Eliminar la foto ' + (i + 1), disabled: !!im.busy, onclick: function () { if (im.id) removed.push(im); else revoke(im); imgs.splice(i, 1); drawGallery(); } })])])]));
       });
       if (!imgs.length) gallery.appendChild(el('li', { class: 'state', text: 'Sin fotos todavía.' }));
     }
