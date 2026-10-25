@@ -34,6 +34,19 @@ let pass = 0, fail = 0; const t = async (n, f) => { try { await f(); pass++; con
   const b64 = await p.evaluate(async () => { const f = Object.values(window.__mockState.files)[0]; const buf = new Uint8Array(await f.arrayBuffer()); let s = ''; for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000)); return [f.type, btoa(s)]; });
   fs.writeFileSync(SHOTS + '/recorte.' + (b64[0] === 'image/png' ? 'png' : 'webp'), Buffer.from(b64[1], 'base64')); console.log('       guardado', SHOTS + '/recorte', b64[0], Math.round(b64[1].length * 0.75 / 1024), 'KB');
   await t('segunda foto usa el modelo en caché (más rápido)', async () => { await p.click('text=Editar'); await p.waitForSelector('#e-autocut'); const t1 = Date.now(); await p.setInputFiles('#e-files', FOTO); await p.waitForSelector('.gitem:nth-child(2) .gthumb:not(.busy)', { timeout: 60000 }); console.log('       segunda vez:', ((Date.now() - t1) / 1000).toFixed(1), 's'); });
+  await p.click('#dlg-edit >> text=Cerrar'); await p.click('#dlg-confirm button:has-text("Descartar")').catch(() => {});
+  await t('foto YA guardada con fondo: botón «Quitar fondo» la reemplaza al guardar', async () => {
+    await p.route('**/__fixture.png', r => r.fulfill({ path: FOTO, contentType: 'image/png' }));
+    await p.evaluate(async () => { const s = window.__mockState, blob = await fetch('/__fixture.png').then(r => r.blob());
+      s.products.push({ id: 'pv', slug: 'vieja', name: 'Foto vieja', description: '', price_cop: null, category_id: 'c1', kind: 'pieza', status: 'publicado', availability: 'disponible', featured: false, tile_color: null, image_mode: 'foto', cta_label: null, whatsapp_message: null, sort_order: 9 });
+      s.product_images.push({ id: 'iv', product_id: 'pv', storage_path: 'products/vieja/original.png', alt: 'vieja', position: 0 }); s.files['products/vieja/original.png'] = blob; });
+    await p.click('.tab:has-text("Categorías")'); await p.click('.tab:has-text("Productos")'); await p.waitForSelector('.prow[data-slug=vieja]');
+    await p.locator('.prow[data-slug=vieja]').getByRole('button', { name: 'Editar' }).click(); await p.waitForSelector('.gitem');
+    await p.click('.gitem >> text=Quitar fondo'); await p.waitForSelector('.gitem >> text=Usar original', { timeout: 60000 });
+    assert.equal(await p.inputValue('#e-mode'), 'recorte');
+    await p.click('.editor button[type=submit]'); await p.waitForSelector('#dlg-edit', { state: 'hidden' });
+    const st = await p.evaluate(() => { const s = window.__mockState, im = s.product_images.filter(i => i.product_id === 'pv'); return { n: im.length, path: im[0].storage_path, alt: im[0].alt, old: !!s.files['products/vieja/original.png'], nuevo: !!s.files[im[0].storage_path], mode: s.products.find(x => x.id === 'pv').image_mode }; });
+    assert.equal(st.n, 1, 'no debe duplicar'); assert(/\.(webp|png)$/.test(st.path) && st.path !== 'products/vieja/original.png', st.path); assert(st.nuevo); assert(!st.old, 'debe borrar el archivo viejo'); assert.equal(st.alt, 'vieja'); assert.equal(st.mode, 'recorte'); });
   await p.screenshot({ path: SHOTS + '/editor.png' });
   await t('sin errores de consola (incluida la política CSP)', async () => assert.equal(errors.length, 0, errors.join(' | ')));
   console.log(`Resultado: ${pass} correctas, ${fail} fallidas`); await b.close(); process.exit(fail ? 1 : 0);

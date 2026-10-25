@@ -121,11 +121,11 @@ window.Yuito = window.Yuito || {};
     var canCut = !!(Y.bgRemove && Y.bgRemove.available());
     var autoCut = inp('e-autocut', 'checkbox'); autoCut.checked = canCut; autoCut.disabled = !canCut;
 
-    function revoke(im) { [im.orig, im.cut].forEach(function (v) { if (v) URL.revokeObjectURL(v.url); }); }
+    function revoke(im) { [im.orig, im.cut].forEach(function (v) { if (v && /^blob:/.test(v.url)) URL.revokeObjectURL(v.url); }); }
     function use(im, which) { var v = im[which]; im.blob = v.blob; im.url = v.url; im.using = which; }
     // Botón por foto nueva: quitar fondo, o alternar entre la versión sin fondo y la original.
     function bgButton(im) {
-      if (!im.orig || im.busy) return null;
+      if ((!im.orig && !im.id) || im.busy) return null;   // fotos nuevas y fotos ya guardadas
       if (im.cut) return el('button', { type: 'button', class: 'btn sm alt', text: im.using === 'cut' ? 'Usar original' : 'Usar sin fondo',
         onclick: function () { use(im, im.using === 'cut' ? 'orig' : 'cut'); drawGallery(); } });
       return canCut ? el('button', { type: 'button', class: 'btn sm alt', text: 'Quitar fondo', onclick: function () { cut(im); } }) : null;
@@ -134,11 +134,15 @@ window.Yuito = window.Yuito || {};
     function cut(im) {
       im.busy = true; drawGallery();
       queue = queue.then(function () {
-        return Y.bgRemove.remove(im.src || im.orig.blob, function (f) { fileMsg.textContent = f < 1 ? 'Preparando el quitado de fondo (solo la primera vez): ' + Math.round(f * 100) + ' %' : 'Quitando el fondo…'; })
+        // Foto ya guardada: se descarga de Supabase para procesarla; la original queda intacta hasta guardar.
+        var source = im.src ? Promise.resolve(im.src) : im.orig ? Promise.resolve(im.orig.blob)
+          : fetch(im.url).then(function (r) { if (!r.ok) throw new Error('no se pudo descargar la foto guardada.'); return r.blob(); })
+              .then(function (b) { im.orig = { blob: b, url: im.url }; im.using = 'orig'; return b; });
+        return source.then(function (src) { return Y.bgRemove.remove(src, function (f) { fileMsg.textContent = f < 1 ? 'Preparando el quitado de fondo (solo la primera vez): ' + Math.round(f * 100) + ' %' : 'Quitando el fondo…'; })
           .then(function (b) {
             if (b.size > 5 * 1024 * 1024) throw new Error('la imagen resultante pesa más de 5 MB.');
-            im.cut = { blob: b, url: URL.createObjectURL(b) }; use(im, 'cut'); mode.value = 'recorte'; fileMsg.textContent = 'Fondo quitado. Si no quedó bien, toque «Usar original».';
-          }, function (e) { fileMsg.textContent = 'No se pudo quitar el fondo: ' + e.message + ' Se usará la foto original.'; })
+            im.cut = { blob: b, url: URL.createObjectURL(b) }; use(im, 'cut'); mode.value = 'recorte'; dirty = true; fileMsg.textContent = 'Fondo quitado. Si no quedó bien, toque «Usar original».';
+          }); }).then(null, function (e) { fileMsg.textContent = 'No se pudo quitar el fondo: ' + e.message + ' Se usará la foto original.'; })
           .then(function () { im.busy = false; drawGallery(); });
       });
     }
@@ -213,7 +217,12 @@ window.Yuito = window.Yuito || {};
         step = 'subir las fotos'; var chain = Promise.resolve();
         imgs.forEach(function (im, i) {
           chain = chain.then(function () {
-            if (im.blob) { var path = 'products/' + savedRow.slug + '/' + I.randomName(im.blob.type);
+            if (im.id && im.using === 'cut') {   // foto ya guardada a la que se le quitó el fondo: se reemplaza
+              var np = 'products/' + savedRow.slug + '/' + I.randomName(im.cut.blob.type);
+              return A.uploadImage(np, im.cut.blob).then(function () { return A.patchImageRow(im.id, { storage_path: np, alt: im.alt, position: i }); })
+                .then(function () { return A.removeFiles([im.path]).catch(function () {}); });
+            }
+            if (!im.id && im.blob) { var path = 'products/' + savedRow.slug + '/' + I.randomName(im.blob.type);
               return A.uploadImage(path, im.blob).then(function () { return A.addImageRow(savedRow.id, path, im.alt, i); }); }
             var orig = p.product_images.filter(function (o) { return o.id === im.id; })[0];
             if (orig && (orig.alt !== im.alt || orig.position !== i)) return A.patchImageRow(im.id, { alt: im.alt, position: i });
