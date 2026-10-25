@@ -63,6 +63,16 @@ iniciar sesión **no** puede ver productos ocultos.
 Fusione la rama `feature/admin-panel` en `main`; GitHub Pages (despliegue desde rama `main`, raíz)
 publicará el sitio. No se necesita ningún secreto en GitHub.
 
+## Fotos: quitar el fondo automáticamente
+
+Al añadir fotos en el editor, la casilla **«Quitar el fondo automáticamente»** viene marcada: el panel
+recorta la pieza en el propio dispositivo (no se envía la foto a ningún servicio externo), la
+encuadra y la guarda con transparencia. Si el recorte no queda bien, toque **«Usar original»**.
+
+- La primera vez descarga el modelo (≈ 44 MB, mejor con wifi); después queda guardado en el navegador.
+- Funciona mejor con la pieza completa sobre un fondo liso y con buena luz.
+- Se usa el modelo «silueta» (proyecto rembg, MIT) con onnxruntime-web (MIT).
+
 ## Respaldos y límites del plan gratuito
 
 - **Descargue una copia** (Respaldo → Descargar copia) después de cambios importantes y guárdela

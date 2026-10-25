@@ -107,21 +107,48 @@ window.Yuito = window.Yuito || {};
         var alt = el('input', { type: 'text', maxlength: 200, placeholder: 'Descripción de la foto (para accesibilidad)', 'aria-label': 'Descripción de la foto ' + (i + 1), value: im.alt });
         alt.addEventListener('input', function () { im.alt = alt.value; });
         gallery.appendChild(el('li', { class: 'gitem' }, [
-          el('img', { src: im.url, alt: '' }),
+          el('div', { class: 'gthumb' + (im.busy ? ' busy' : '') }, [el('img', { src: im.url, alt: '' }), im.busy ? el('span', { class: 'gbadge', text: 'Quitando fondo…' }) : null]),
           el('div', { class: 'gctl' }, [alt, el('div', { class: 'row' }, [
+            bgButton(im),
             el('button', { type: 'button', class: 'btn sm alt icon', 'aria-label': 'Mover foto antes', disabled: i === 0, text: '←', onclick: function () { imgs.splice(i - 1, 0, imgs.splice(i, 1)[0]); drawGallery(); } }),
             el('button', { type: 'button', class: 'btn sm alt icon', 'aria-label': 'Mover foto después', disabled: i === imgs.length - 1, text: '→', onclick: function () { imgs.splice(i + 1, 0, imgs.splice(i, 1)[0]); drawGallery(); } }),
-            el('button', { type: 'button', class: 'btn sm alt danger-o', text: 'Quitar', onclick: function () { if (im.id) removed.push(im); else URL.revokeObjectURL(im.url); imgs.splice(i, 1); drawGallery(); } })])])]));
+            el('button', { type: 'button', class: 'btn sm alt danger-o', text: 'Quitar', disabled: !!im.busy, onclick: function () { if (im.id) removed.push(im); else revoke(im); imgs.splice(i, 1); drawGallery(); } })])])]));
       });
       if (!imgs.length) gallery.appendChild(el('li', { class: 'state', text: 'Sin fotos todavía.' }));
     }
     var file = el('input', { id: 'e-files', type: 'file', accept: 'image/jpeg,image/png,image/webp', multiple: true });
     var fileMsg = el('p', { class: 'hint left', role: 'status' });
+    var canCut = !!(Y.bgRemove && Y.bgRemove.available());
+    var autoCut = inp('e-autocut', 'checkbox'); autoCut.checked = canCut; autoCut.disabled = !canCut;
+
+    function revoke(im) { [im.orig, im.cut].forEach(function (v) { if (v) URL.revokeObjectURL(v.url); }); }
+    function use(im, which) { var v = im[which]; im.blob = v.blob; im.url = v.url; im.using = which; }
+    // Botón por foto nueva: quitar fondo, o alternar entre la versión sin fondo y la original.
+    function bgButton(im) {
+      if (!im.orig || im.busy) return null;
+      if (im.cut) return el('button', { type: 'button', class: 'btn sm alt', text: im.using === 'cut' ? 'Usar original' : 'Usar sin fondo',
+        onclick: function () { use(im, im.using === 'cut' ? 'orig' : 'cut'); drawGallery(); } });
+      return canCut ? el('button', { type: 'button', class: 'btn sm alt', text: 'Quitar fondo', onclick: function () { cut(im); } }) : null;
+    }
+    var queue = Promise.resolve();
+    function cut(im) {
+      im.busy = true; drawGallery();
+      queue = queue.then(function () {
+        return Y.bgRemove.remove(im.src || im.orig.blob, function (f) { fileMsg.textContent = f < 1 ? 'Preparando el quitado de fondo (solo la primera vez): ' + Math.round(f * 100) + ' %' : 'Quitando el fondo…'; })
+          .then(function (b) {
+            if (b.size > 5 * 1024 * 1024) throw new Error('la imagen resultante pesa más de 5 MB.');
+            im.cut = { blob: b, url: URL.createObjectURL(b) }; use(im, 'cut'); mode.value = 'recorte'; fileMsg.textContent = 'Fondo quitado. Si no quedó bien, toque «Usar original».';
+          }, function (e) { fileMsg.textContent = 'No se pudo quitar el fondo: ' + e.message + ' Se usará la foto original.'; })
+          .then(function () { im.busy = false; drawGallery(); });
+      });
+    }
     file.addEventListener('change', function () {
       var chosen = Array.prototype.slice.call(file.files); file.value = ''; fileMsg.textContent = '';
       var room = 8 - imgs.length; if (chosen.length > room) { fileMsg.textContent = 'Máximo 8 fotos por producto; se tomarán las primeras ' + Math.max(room, 0) + '.'; chosen = chosen.slice(0, Math.max(room, 0)); }
       chosen.reduce(function (pr, f0) {
-        return pr.then(function () { return I.prepare(f0).then(function (blob) { imgs.push({ blob: blob, url: URL.createObjectURL(blob), alt: '' }); drawGallery(); },
+        return pr.then(function () { return I.prepare(f0).then(function (blob) {
+            var im = { src: f0, orig: { blob: blob, url: URL.createObjectURL(blob) }, cut: null, alt: '' }; use(im, 'orig'); imgs.push(im); drawGallery();
+            if (autoCut.checked) cut(im); },
           function (e) { fileMsg.textContent = (fileMsg.textContent ? fileMsg.textContent + ' ' : '') + e.message; }); });
       }, Promise.resolve());
     });
@@ -138,15 +165,16 @@ window.Yuito = window.Yuito || {};
       el('div', { class: 'fld chk' }, [useColor, el('label', { for: 'e-usecolor', text: 'Usar un color propio para la lámina' }), color]),
       U.field('e-mode', 'Cómo mostrar la foto', mode),
       el('fieldset', { class: 'fld' }, [el('legend', { text: 'Fotografías' }), gallery,
+        el('div', { class: 'fld chk' }, [autoCut, el('label', { for: 'e-autocut', text: canCut ? 'Quitar el fondo automáticamente a las fotos nuevas' : 'Quitar el fondo (no disponible en este navegador)' })]),
         el('label', { for: 'e-files', class: 'btn sm alt filebtn', text: 'Añadir fotos' }), file, fileMsg,
-        el('p', { class: 'hint left', text: 'JPEG, PNG o WebP. Se optimizan a un máximo de 1600 px. La primera foto es la principal. Para fondo transparente use PNG o WebP.' })]),
+        el('p', { class: 'hint left', text: 'JPEG, PNG o WebP. Se optimizan a un máximo de 1600 px. La primera foto es la principal. El fondo se quita en este dispositivo; la primera vez descarga unos 44 MB (mejor con wifi).' })]),
       U.field('e-cta', 'Texto del botón (opcional)', cta), U.field('e-wam', 'Mensaje de WhatsApp (opcional)', wam, 'Si lo deja vacío se usa «Hola, quisiera información sobre …».'),
       U.field('e-slug', 'Identificador interno', slug, isNew ? 'Se genera del nombre; solo letras minúsculas, números y guiones.' : 'No se puede cambiar: sirve para recuperar copias de seguridad sin duplicados.'),
       errBox, el('div', { class: 'row end sticky' }, [el('button', { type: 'button', class: 'btn alt', text: 'Cancelar', onclick: function () { tryClose(); } }), save])]);
     d.appendChild(form);
 
     var dirty = false; form.addEventListener('input', function () { dirty = true; }); form.addEventListener('change', function () { dirty = true; });
-    function cleanup() { imgs.forEach(function (i) { if (i.blob) URL.revokeObjectURL(i.url); }); }
+    function cleanup() { imgs.forEach(function (i) { if (i.orig) revoke(i); }); }
     function tryClose() {
       if (!dirty) { cleanup(); d.close(); return; }
       U.confirm('¿Descartar los cambios?', 'Hay cambios sin guardar en este producto.', 'Descartar').then(function (y) { if (y) { cleanup(); d.close(); } });
@@ -168,6 +196,7 @@ window.Yuito = window.Yuito || {};
 
     form.addEventListener('submit', function (ev) {
       ev.preventDefault(); if (!validate()) return;
+      if (imgs.some(function (x) { return x.busy; })) { fail('Espere a que termine de quitarse el fondo de las fotos.'); return; }
       var pr = price.value.replace(/[\s.$]/g, '');
       var maxOrder = prods.reduce(function (m, x) { return Math.max(m, x.sort_order); }, 0);
       var rec = { id: p ? p.id : null, slug: slug.value.trim(), name: name.value.trim(), description: desc.value, price_cop: pr === '' ? null : +pr,
